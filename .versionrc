@@ -1,0 +1,9 @@
+{
+    "types": [
+    {"type": "feat", "section": "Added"},
+    {"type": "fix", "section": "Fixed"},
+    {"type": "remove", "section": "Removed"},
+    {"type": "change", "section": "Changed"},
+    {"type": "chore", "section": "Chore"}
+    ]
+}
