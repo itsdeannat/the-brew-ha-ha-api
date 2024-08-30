@@ -9,6 +9,7 @@ djangorestframework = "*"
 drf-spectacular = "*"
 pytest-django = "*"
 python-dotenv = "*"
+djangorestframework-simplejwt = "*"
 
 [dev-packages]
 
