@@ -7,7 +7,7 @@ class RegistrationTestCalls(TestCase):
         '''
         Tests that a valid data results in successful registration
         '''
-        response = self.client.post('api/register/', data={
+        response = self.client.post('/api/register/', data={
             'username': 'johndoe',
             'password': 'password123',
         }, follow=True)
@@ -17,7 +17,7 @@ class RegistrationTestCalls(TestCase):
         '''
         Tests that missing data results in unsuccessful registration
         '''
-        response = self.client.post('api/register/', data={
+        response = self.client.post('/api/register/', data={
             'username': '',
             'password': 'pass$word123',
         }, follow=True)
@@ -27,7 +27,7 @@ class RegistrationTestCalls(TestCase):
         '''
         Tests that invalid data results in unsuccessful registration
         '''
-        response = self.client.post('api/register/', data={
+        response = self.client.post('/api/register/', data={
             'username': '$asdk)##$',
             'password': 'pass$worSDFd123',
         }, follow=True)
@@ -43,7 +43,7 @@ class JWTAuthenticationCalls(TestCase):
             'username': 'johndoe',
             'password': 'password123'
         }
-        response = self.client.post('api/register/', user_data, format='json')
+        response = self.client.post('/api/register/', user_data, format='json')
         self.assertEqual(response.status_code, 201)
 
         response = self.client.post('/api/token/', user_data, follow=True)
