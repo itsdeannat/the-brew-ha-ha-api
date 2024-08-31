@@ -1,33 +1,33 @@
 from django.test import TestCase
 
 # Create your tests here.
-class RegistrationTestCalls(TestCase):
+class SignupTestCalls(TestCase):
         
-    def test_registration_view_valid(self):
+    def test_signup_view_valid(self):
         '''
-        Tests that a valid data results in successful registration
+        Tests that a valid data results in successful signup
         '''
-        response = self.client.post('/api/register/', data={
+        response = self.client.post('/api/signup/', data={
             'username': 'johndoe',
             'password': 'password123',
         }, follow=True)
         self.assertEqual(response.status_code, 201)
         
-    def test_registration_view_missing_user_name(self):
+    def test_signup_view_missing_user_name(self):
         '''
-        Tests that missing data results in unsuccessful registration
+        Tests that missing data results in unsuccessful signup
         '''
-        response = self.client.post('/api/register/', data={
+        response = self.client.post('/api/signup/', data={
             'username': '',
             'password': 'pass$word123',
         }, follow=True)
         self.assertEqual(response.status_code, 400)
         
-    def test_registration_view_bad_data(self):
+    def test_signup_view_bad_data(self):
         '''
-        Tests that invalid data results in unsuccessful registration
+        Tests that invalid data results in unsuccessful signup
         '''
-        response = self.client.post('/api/register/', data={
+        response = self.client.post('/api/signup/', data={
             'username': '$asdk)##$',
             'password': 'pass$worSDFd123',
         }, follow=True)
@@ -43,7 +43,7 @@ class JWTAuthenticationCalls(TestCase):
             'username': 'johndoe',
             'password': 'password123'
         }
-        response = self.client.post('/api/register/', user_data, format='json')
+        response = self.client.post('/api/signup/', user_data, format='json')
         self.assertEqual(response.status_code, 201)
 
         response = self.client.post('/api/token/', user_data, follow=True)
