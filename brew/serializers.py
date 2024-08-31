@@ -2,7 +2,7 @@ from rest_framework import serializers
 from django.contrib.auth.models import User
 import re
 
-class UserRegistrationSerializer(serializers.ModelSerializer):
+class UserSignupSerializer(serializers.ModelSerializer):
     username = serializers.CharField(
         required=True,
         error_messages={
