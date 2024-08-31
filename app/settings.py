@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework_simplejwt',
     'brew',
+    'drf_spectacular'
     
 ]
 
@@ -139,4 +140,11 @@ REST_FRAMEWORK = {
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
     'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
     'PAGE_SIZE': 10 
+}
+
+SPECTACULAR_SETTINGS = {
+    'TITLE': 'The Brew Ha Ha API',
+    'DESCRIPTION': 'The Brew Ha Ha API allows you to manage an inventory of coffee drinks and popular snacks.',
+    'VERSION': '1.0.0',
+    'SERVE_INCLUDE_SCHEMA': False,
 }
