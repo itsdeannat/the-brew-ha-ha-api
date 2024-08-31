@@ -6,15 +6,15 @@ from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework_simplejwt.authentication import JWTAuthentication
 
-from .serializers import UserRegistrationSerializer
+from .serializers import UserSignupSerializer
 
 # Create your views here.
 
-class UserRegistrationView(APIView):
+class UserSignupView(APIView):
 
     @extend_schema(exclude=True)
     def post(self, request):
-        serializer = UserRegistrationSerializer(data=request.data)
+        serializer = UserSignupSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
             return Response({'message': 'User created successfully'}, status=status.HTTP_201_CREATED)
