@@ -35,9 +35,9 @@ class SignupTestCalls(TestCase):
         
 class JWTAuthenticationCalls(TestCase):
     
-    def test_registered_user(self):
+    def test_authenticated_user(self):
         '''
-        Tests that registered user can retrieve JWT
+        Tests that authenticated user can retrieve JWT
         '''
         user_data = {
             'username': 'johndoe',
@@ -49,13 +49,83 @@ class JWTAuthenticationCalls(TestCase):
         response = self.client.post('/api/token/', user_data, follow=True)
         self.assertEqual(response.status_code, 200)
         
-    def test_unregistered_user(self):
+    def test_not_authenticated_user(self):
         '''
-        Tests that unregistered user can't receive JWT
+        Tests that user can't receive JWT if not authenticated
         '''
         user_data = {
             'username': 'johndoe',
             'password': 'password123'
         }
         response = self.client.post('/api/token/', user_data, follow=True)
+        self.assertEqual(response.status_code, 401)
+        
+class GetAllResourcesCalls(TestCase):
+    
+    def test_authenticated_get_coffees(self):
+        '''
+        Tests that an authenticated user can make a GET request to /coffees
+        '''
+        user_data = {
+            'username': 'johndoe',
+            'password': 'password123'
+        }
+        # User signs up for API
+        response = self.client.post('/api/signup/', user_data, format='json')
+        self.assertEqual(response.status_code, 201)
+
+        # User gets a JWT
+        response = self.client.post('/api/token/', user_data, follow=True)
+        self.assertEqual(response.status_code, 200)
+        
+        #Get the JWT from response
+        token = response.json().get('access')
+        self.assertIsNotNone(token, "Token should be present in the response")
+        
+        # Send GET request
+        response = self.client.get('/api/coffees/', HTTP_AUTHORIZATION=f'Bearer {token}')
+        self.assertEqual(response.status_code, 200)
+        
+    def test_authenticated_get_snacks(self):
+        '''
+        Tests that an authenticated user can make a GET request to /snack
+        '''
+        user_data = {
+            'username': 'johndoe',
+            'password': 'password123'
+        }
+        # User signs up for API
+        response = self.client.post('/api/signup/', user_data, format='json')
+        self.assertEqual(response.status_code, 201)
+
+        # User gets a JWT
+        response = self.client.post('/api/token/', user_data, follow=True)
+        self.assertEqual(response.status_code, 200)
+        
+        #Get the JWT from response
+        token = response.json().get('access')
+        self.assertIsNotNone(token, "Token should be present in the response")
+        
+        # Send GET request
+        response = self.client.get('/api/snacks/', HTTP_AUTHORIZATION=f'Bearer {token}')
+        self.assertEqual(response.status_code, 200)
+        
+    def test_not_authenticated_get_snacks(self):
+        '''
+        Tests that an user can't make a GET request if not authenticated
+        '''
+        user_data = {
+            'username': 'johndoe',
+            'password': 'password123'
+        }
+        # User signs up for API
+        response = self.client.post('/api/signup/', user_data, format='json')
+        self.assertEqual(response.status_code, 201)
+        
+        #Get the JWT from response
+        token = response.json().get('access')
+        self.assertIsNone(token, "Token should not be present in the response")
+        
+        # Send GET request
+        response = self.client.get('/api/snacks/', HTTP_AUTHORIZATION=f'Bearer {token}')
         self.assertEqual(response.status_code, 401)
