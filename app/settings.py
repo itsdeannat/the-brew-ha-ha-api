@@ -144,7 +144,7 @@ REST_FRAMEWORK = {
 
 SPECTACULAR_SETTINGS = {
     'TITLE': 'The Brew Ha Ha API',
-    'DESCRIPTION': 'The Brew Ha Ha API allows you to manage an inventory of coffee drinks and popular snacks.',
+    'DESCRIPTION': 'The Brew Ha Ha API allows you to programmatically access our products, securely manage orders, and streamline purchases.',
     'VERSION': '1.0.0',
     'SERVE_INCLUDE_SCHEMA': False,
 }
