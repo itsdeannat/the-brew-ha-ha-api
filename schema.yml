@@ -7,9 +7,42 @@ info:
 paths:
   /api/coffees/:
     get:
-      operationId: coffees_retrieve
+      operationId: get_all_coffees
       description: Get all coffees in the inventory. The response includes information
         about each coffee's type, temperature, caffeine amount, and price.
+      tags:
+      - coffees
+      security:
+      - JWTAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Coffee'
+              examples:
+                ExampleCoffeeDetails:
+                  value:
+                  - id: 1
+                    type: mocha
+                    temperature: hot
+                    caffeine_amount: 105
+                    price: 3.75
+                  summary: Example coffee details
+          description: ''
+  /api/coffees/{id}/:
+    get:
+      operationId: get_coffee_by_id
+      description: Get a coffee by ID. The response includes information about the
+        coffee type, temperature, caffeine amount, and price for the coffee.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
       tags:
       - coffees
       security:
@@ -26,9 +59,10 @@ paths:
                     id: 1
                     type: mocha
                     temperature: hot
-                    caffeine_amount: 105
-                    price: 3.75
+                    caffeine_amount: '105'
+                    price: '3.75'
                   summary: Example coffee details
+                  description: A coffee object
           description: ''
         '400':
           content:
@@ -39,7 +73,7 @@ paths:
               examples:
                 BadRequest:
                   value:
-                    detail: Request body could not be read properly.
+                    detail: The request body could not be read properly
                   summary: Bad Request
           description: ''
         '401':
@@ -67,7 +101,7 @@ paths:
           description: ''
   /api/snacks/:
     get:
-      operationId: snacks_retrieve
+      operationId: get_all_snacks
       description: Gets all snacks in the inventory. The response includes information
         about each snack's name and price.
       tags:
@@ -97,7 +131,72 @@ paths:
               examples:
                 BadRequest:
                   value:
-                    detail: Request body could not be read properly.
+                    detail: The request body could not be read properly.
+                  summary: Bad Request
+          description: ''
+        '401':
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: {}
+              examples:
+                Unauthorized:
+                  value:
+                    detail: Authentication credentials were not provided.
+          description: ''
+        '404':
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: {}
+              examples:
+                NotFound:
+                  value:
+                    detail: No Snack matches the given query.
+                  summary: Not Found
+          description: ''
+  /api/snacks/{id}:
+    get:
+      operationId: get_snack_by_id
+      description: Get a snack by ID. The response includes information about the
+        snack type, the brand name, and price.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - snacks
+      security:
+      - JWTAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Snack'
+              examples:
+                ExampleSnackDetails:
+                  value:
+                    id: 1
+                    product_name: muffin
+                    price: 3.0
+                  summary: Example snack details
+                  description: A snack object
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: {}
+              examples:
+                BadRequest:
+                  value:
+                    detail: The request body could not be read properly.
                   summary: Bad Request
           description: ''
         '401':
