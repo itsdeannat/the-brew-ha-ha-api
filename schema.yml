@@ -7,7 +7,7 @@ info:
 paths:
   /api/coffees/:
     get:
-      operationId: coffees_list
+      operationId: coffees_retrieve
       description: Get all coffees in the inventory. The response includes information
         about each coffee's type, temperature, caffeine amount, and price.
       tags:
@@ -19,18 +19,51 @@ paths:
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Coffee'
+                $ref: '#/components/schemas/Coffee'
               examples:
                 ExampleCoffeeDetails:
                   value:
-                  - id: 1
+                    id: 1
                     type: mocha
                     temperature: hot
                     caffeine_amount: 105
                     price: 3.75
                   summary: Example coffee details
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: {}
+              examples:
+                BadRequest:
+                  value:
+                    detail: Request body could not be read properly.
+                  summary: Bad Request
+          description: ''
+        '401':
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: {}
+              examples:
+                Unauthorized:
+                  value:
+                    detail: Authentication credentials were not provided.
+          description: ''
+        '404':
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: {}
+              examples:
+                NotFound:
+                  value:
+                    detail: No Coffee matches the given query.
+                  summary: Not Found
           description: ''
   /api/snacks/:
     get:
@@ -54,6 +87,41 @@ paths:
                     snack_name: muffin
                     price: 3.0
                   summary: Example snack details
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: {}
+              examples:
+                BadRequest:
+                  value:
+                    detail: Request body could not be read properly.
+                  summary: Bad Request
+          description: ''
+        '401':
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: {}
+              examples:
+                Unauthorized:
+                  value:
+                    detail: Authentication credentials were not provided.
+          description: ''
+        '404':
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: {}
+              examples:
+                NotFound:
+                  value:
+                    detail: No Snack matches the given query.
+                  summary: Not Found
           description: ''
   /api/token/:
     post:
