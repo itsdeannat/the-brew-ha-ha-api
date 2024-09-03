@@ -144,7 +144,21 @@ REST_FRAMEWORK = {
 
 SPECTACULAR_SETTINGS = {
     'TITLE': 'The Brew Ha Ha API',
-    'DESCRIPTION': 'The Brew Ha Ha API allows you to manage an inventory of coffee drinks and popular snacks.',
+    'DESCRIPTION': 'The Brew Ha Ha API allows you to programmatically access our products, securely manage orders, and streamline purchases.',
     'VERSION': '1.0.0',
     'SERVE_INCLUDE_SCHEMA': False,
+    'TAGS': [
+        {
+            'name': 'coffees',
+            'description': 'Represents a coffee drink in the Brew Ha Ha inventory.'
+        },
+        {
+            'name': 'snacks',
+            'description': 'Represents a snack in the Brew Ha Ha inventory.'
+        },
+        {
+            'name': 'token',
+            'description': 'Use these endpoints generate a JSON Web Token (JWT) to authenticate your credentials.'
+        }
+    ]
 }

@@ -1,8 +1,75 @@
 from rest_framework import serializers
 from django.contrib.auth.models import User
 import re
+from .models import Coffee
+from .models import Snack
 
+class CoffeeSerializer(serializers.ModelSerializer):
+    
+    id = serializers.CharField(help_text='The unique identifer of the coffee')
+    coffee_type = serializers.CharField(help_text='The type of coffee')
+    temperature = serializers.CharField(help_text='The temperature of the coffee')
+    caffeine_amount = serializers.IntegerField(help_text='The amount of caffeine in the coffee')
+    price = serializers.FloatField(help_text='The price of the coffee in USD')
+    
+    """Serializer for the coffee model. 
+    
+    Converts Coffee model instances into JSON format.
+
+    Fields:
+        id (int): The unique identifier for the coffee.
+        coffee_type (str): The name or type of the coffee, e.g., 'Espresso', 'Latte'.
+        temperature (str): The serving temperature of the coffee, e.g., 'Hot', 'Iced'.
+        caffeine_amount (int): The amount of caffeine in milligrams.
+        price (float): The price of the coffee in USD.
+    """
+    class Meta:
+        model=Coffee
+        fields=['id', 'coffee_type', 'temperature', 'caffeine_amount', 'price']
+        
+class SnackSerializer(serializers.ModelSerializer):
+    
+    id = serializers.CharField(help_text='The unique identifier for the snack')
+    snack_name = serializers.CharField(help_text='The brand name of the snack')
+    price = serializers.FloatField(help_text='The price of the coffee in USD')
+    
+    """Serializer for the snack model. 
+    
+    Converts Snack model instances into JSON format.
+
+    Fields:
+        id (int): The unique identifier for the snack.
+        snack_name (str): The name of the snack, e.g. 'Muffin', 'Chips'
+        price (float): The price of the snack in USD.
+    """
+    
+    snack_name = serializers.CharField(help_text='The name of the snack')
+    price = serializers.FloatField(help_text='The price of the coffee in USD')
+    class Meta:
+        model=Snack
+        fields=['id', 'snack_name', 'price']
+    
 class UserSignupSerializer(serializers.ModelSerializer):
+    """Serializer for user signups. 
+    
+    Validates and creates a user account with a username and password.
+
+    Fields:
+        username (str): The user's username. Must be alphanumeric.
+        password (str): The user's password. Must be alphanumeric.
+
+    Raises:
+        serializers.ValidationError: If the username or password is not alphanumeric.
+        
+    Methods:
+        def_validate_username(username): Validates that username is alphanumeric. 
+        def_validate_password(password): Validates that password is alphanumeric. 
+        def_create: Creates a new user with validated data
+
+    Returns:
+        User: the new User instance
+    """
+    
     username = serializers.CharField(
         required=True,
         error_messages={
