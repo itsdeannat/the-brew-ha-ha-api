@@ -5,6 +5,13 @@ from .models import Coffee
 from .models import Snack
 
 class CoffeeSerializer(serializers.ModelSerializer):
+    
+    id = serializers.CharField(help_text='The unique identifer of the coffee')
+    coffee_type = serializers.CharField(help_text='The type of coffee')
+    temperature = serializers.CharField(help_text='The temperature of the coffee')
+    caffeine_amount = serializers.IntegerField(help_text='The amount of caffeine in the coffee')
+    price = serializers.FloatField(help_text='The price of the coffee in USD')
+    
     """Serializer for the coffee model. 
     
     Converts Coffee model instances into JSON format.
@@ -21,6 +28,11 @@ class CoffeeSerializer(serializers.ModelSerializer):
         fields=['id', 'coffee_type', 'temperature', 'caffeine_amount', 'price']
         
 class SnackSerializer(serializers.ModelSerializer):
+    
+    id = serializers.CharField(help_text='The unique identifier for the snack')
+    snack_name = serializers.CharField(help_text='The brand name of the snack')
+    price = serializers.FloatField(help_text='The price of the coffee in USD')
+    
     """Serializer for the snack model. 
     
     Converts Snack model instances into JSON format.
