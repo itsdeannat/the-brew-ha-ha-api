@@ -2,9 +2,59 @@ openapi: 3.0.3
 info:
   title: The Brew Ha Ha API
   version: 1.0.0
-  description: The Brew Ha Ha API allows you to manage an inventory of coffee drinks
-    and popular snacks.
+  description: The Brew Ha Ha API allows you to programmatically access our products,
+    securely manage orders, and streamline purchases.
 paths:
+  /api/coffees/:
+    get:
+      operationId: coffees_list
+      description: Get all coffees in the inventory. The response includes information
+        about each coffee's type, temperature, caffeine amount, and price.
+      tags:
+      - coffees
+      security:
+      - JWTAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Coffee'
+              examples:
+                ExampleCoffeeDetails:
+                  value:
+                  - id: 1
+                    type: mocha
+                    temperature: hot
+                    caffeine_amount: 105
+                    price: 3.75
+                  summary: Example coffee details
+          description: ''
+  /api/snacks/:
+    get:
+      operationId: snacks_retrieve
+      description: Gets all snacks in the inventory. The response includes information
+        about each snack's name and price.
+      tags:
+      - snacks
+      security:
+      - JWTAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Snack'
+              examples:
+                ExampleSnackDetails:
+                  value:
+                    id: 1
+                    snack_name: muffin
+                    price: 3.0
+                  summary: Example snack details
+          description: ''
   /api/token/:
     post:
       operationId: token_create
@@ -61,6 +111,48 @@ paths:
           description: ''
 components:
   schemas:
+    Coffee:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The unique identifer of the coffee
+        coffee_type:
+          type: string
+          description: The type of coffee
+        temperature:
+          type: string
+          description: The temperature of the coffee
+        caffeine_amount:
+          type: integer
+          description: The amount of caffeine in the coffee
+        price:
+          type: number
+          format: double
+          description: The price of the coffee in USD
+      required:
+      - caffeine_amount
+      - coffee_type
+      - id
+      - price
+      - temperature
+    Snack:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The unique identifier for the snack
+        snack_name:
+          type: string
+          description: The name of the snack
+        price:
+          type: number
+          format: double
+          description: The price of the coffee in USD
+      required:
+      - id
+      - price
+      - snack_name
     TokenObtainPair:
       type: object
       properties:
@@ -93,3 +185,18 @@ components:
       required:
       - access
       - refresh
+  securitySchemes:
+    JWTAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: 'JWT Authorization header using the Bearer scheme. Example: "Authorization:
+        Bearer {token}"'
+tags:
+- name: coffees
+  description: Represents a coffee drink in the Brew Ha Ha inventory.
+- name: snacks
+  description: Represents a snack in the Brew Ha Ha inventory.
+- name: token
+  description: Use these endpoints generate a JSON Web Token (JWT) to authenticate
+    your credentials.
