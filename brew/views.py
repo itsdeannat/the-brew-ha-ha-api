@@ -17,6 +17,7 @@ class GetAllCoffeesView(APIView):
     permission_classes = [IsAuthenticated]
     
     @extend_schema(
+        operation_id="get_all_coffees",
         request=None,
         responses={
             200: CoffeeSerializer(many=True),
@@ -43,15 +44,76 @@ class GetAllCoffeesView(APIView):
         serializer = CoffeeSerializer(coffee, many=True)
         return Response(serializer.data)
     
+class GetCoffeeByIdView(APIView):
+    
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
+    
+    @extend_schema(
+        operation_id="get_coffee_by_id",
+        request=CoffeeSerializer,
+        responses={
+            200: CoffeeSerializer,
+            400: OpenApiTypes.OBJECT,
+            401: OpenApiTypes.OBJECT,
+            404: OpenApiTypes.OBJECT
+        },
+        examples=[
+            OpenApiExample(
+                name="Example coffee details",
+                description="A coffee object",
+                value={
+                    "id": 1,
+                    "type": "mocha",
+                    "temperature": "hot",
+                    "caffeine_amount": "105",
+                    "price": "3.75"
+                },
+                response_only=True
+            ),
+            OpenApiExample(
+            name="Bad Request",
+            description="",
+            value={"detail": "The request body could not be read properly"},  
+            response_only=True,
+            status_codes=["400"],
+            ),
+            OpenApiExample(
+            name="Unauthorized",
+            description="",
+            value={"detail":"Authentication credentials were not provided."},
+            response_only=True,
+            status_codes=["401"],
+            ),
+            OpenApiExample(
+            name="Not Found",
+            description="",
+            value={"detail":"No Coffee matches the given query."},
+            response_only=True,
+            status_codes=["404"],
+            ),
+        ],
+        methods=['GET'],
+        description="Get a coffee by ID. The response includes information about the coffee type, temperature, caffeine amount, and price for the coffee."
+    )
+    def get(self, request, pk):
+        coffee = get_object_or_404(Coffee, pk=pk)
+        serializer = CoffeeSerializer(coffee)
+        return Response(serializer.data)
+    
 class GetAllSnacksView(APIView):
     
     authentication_classes = [JWTAuthentication]
     permission_classes = [IsAuthenticated]
     
     @extend_schema( 
+        operation_id="get_all_snacks",
         request=None,
         responses={
             200: SnackSerializer,
+            400: OpenApiTypes.OBJECT,
+            401: OpenApiTypes.OBJECT,
+            404: OpenApiTypes.OBJECT
         },
         examples=[
             OpenApiExample(
@@ -64,6 +126,28 @@ class GetAllSnacksView(APIView):
                 },
                 response_only=True
             ),
+            OpenApiExample(
+            name="Bad Request",
+            description="",
+            value={"detail": "The request body could not be read properly."
+            },  
+            response_only=True,
+            status_codes=["400"],
+            ),
+            OpenApiExample(
+            name="Unauthorized",
+            description="",
+            value={"detail":"Authentication credentials were not provided."},
+            response_only=True,
+            status_codes=["401"],
+            ),
+            OpenApiExample(
+            name="Not Found",
+            description="",
+            value={"detail":"No Snack matches the given query."},
+            response_only=True,
+            status_codes=["404"],
+            ),
         ],
         methods=['GET'],        
         description="Gets all snacks in the inventory. The response includes information about each snack's name and price."
@@ -73,6 +157,64 @@ class GetAllSnacksView(APIView):
         serializer = SnackSerializer(snack, many=True)
         return Response(serializer.data)
     
+
+class GetSnackByIdView(APIView):
+    
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
+    
+    @extend_schema(  
+        operation_id="get_snack_by_id",
+        request=SnackSerializer,
+        responses={
+            200: SnackSerializer,
+            400: OpenApiTypes.OBJECT,
+            401: OpenApiTypes.OBJECT,
+            404: OpenApiTypes.OBJECT
+        },
+        examples=[
+            OpenApiExample(
+                name="Example snack details",
+                description="A snack object",
+                value={
+                    "id": 1,
+                    "product_name": "muffin", 
+                    "price": 3.00
+                },
+                response_only=True
+            ),
+            OpenApiExample(
+            name="Bad Request",
+            description="",
+            value={"detail": "The request body could not be read properly."
+            },  
+            response_only=True,
+            status_codes=["400"],
+            ),
+            OpenApiExample(
+            name="Unauthorized",
+            description="",
+            value={"detail":"Authentication credentials were not provided."},
+            response_only=True,
+            status_codes=["401"],
+            ),
+            OpenApiExample(
+            name="Not Found",
+            description="",
+            value={"detail":"No Snack matches the given query."},
+            response_only=True,
+            status_codes=["404"],
+            ),
+        ],
+        methods=['GET'],
+        description="Get a snack by ID. The response includes information about the snack type, the brand name, and price.",
+    )
+    def get(self, request, pk):
+        snack = get_object_or_404(Snack, pk=pk)
+        serializer = SnackSerializer(snack)
+        return Response(serializer.data)
+
+
 class UserSignupView(APIView):
 
     @extend_schema(exclude=True)
