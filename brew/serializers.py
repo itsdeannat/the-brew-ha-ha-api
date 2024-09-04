@@ -11,14 +11,14 @@ class CoffeeSerializer(serializers.ModelSerializer):
     Converts Coffee model instances into JSON format.
 
     Fields:
-        id (int): The unique identifier for the coffee.
+        id (int): A unique integer value identifying this coffee.
         coffee_type (str): The name or type of the coffee, e.g., 'Espresso', 'Latte'.
         temperature (str): The serving temperature of the coffee, e.g., 'Hot', 'Iced'.
         caffeine_amount (int): The amount of caffeine in milligrams.
         price (float): The price of the coffee in USD.
     """
     
-    id = serializers.CharField(help_text='The unique identifer of the coffee')
+    id = serializers.CharField(help_text='A unique integer value identifying this coffee.')
     coffee_type = serializers.CharField(help_text='The type of coffee')
     temperature = serializers.CharField(help_text='The temperature of the coffee')
     caffeine_amount = serializers.IntegerField(help_text='The amount of caffeine in the coffee')
