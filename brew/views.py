@@ -144,7 +144,7 @@ class CoffeeViewSet(ReadOnlyModelViewSet):
         return Response(serializer.data)
     
 
-class SnackViewSet(viewsets.ModelViewSet):
+class SnackViewSet(ReadOnlyModelViewSet):
     
     authentication_classes = [JWTAuthentication]
     permission_classes = [IsAuthenticated]
@@ -246,9 +246,9 @@ class SnackViewSet(viewsets.ModelViewSet):
         ],
     )
     def retrieve(self, request, pk=None):
-        queryset = Coffee.objects.all()
+        queryset = Snack.objects.all()
         user = get_object_or_404(queryset, pk=pk)
-        serializer = CoffeeSerializer(user)
+        serializer = SnackSerializer(user)
         return Response(serializer.data)
 
 class UserSignupView(APIView):
