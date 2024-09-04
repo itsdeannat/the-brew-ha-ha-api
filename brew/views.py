@@ -175,7 +175,7 @@ class GetSnackByIdView(APIView):
         examples=[
             OpenApiExample(
                 name="Example snack details",
-                description="A snack object",
+                description="",
                 value={
                     "id": 1,
                     "product_name": "muffin", 
