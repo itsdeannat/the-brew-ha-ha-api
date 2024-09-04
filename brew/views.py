@@ -1,6 +1,8 @@
 from django.shortcuts import get_object_or_404
 from rest_framework.views import APIView
-from drf_spectacular.utils import extend_schema, OpenApiExample, OpenApiParameter
+from rest_framework import viewsets
+from rest_framework.viewsets import ReadOnlyModelViewSet
+from drf_spectacular.utils import extend_schema, OpenApiExample, OpenApiResponse
 from drf_spectacular.types import OpenApiTypes
 from rest_framework.response import Response
 from rest_framework import status
@@ -11,47 +13,87 @@ from .models import Snack
 from .serializers import CoffeeSerializer, SnackSerializer, UserSignupSerializer
 
 # Create your views here.
-class GetAllCoffeesView(APIView):
-        
+
+class CoffeeViewSet(ReadOnlyModelViewSet):
+    
     authentication_classes = [JWTAuthentication]
     permission_classes = [IsAuthenticated]
     
+    serializer_class = CoffeeSerializer
+    queryset = Coffee.objects.all()
+    
     @extend_schema(
-        operation_id="get_all_coffees",
-        request=None,
+        operation_id="list_coffees",
+        description="Returns a list of all coffee objects in the database",
         responses={
-            200: CoffeeSerializer(many=True),
+            200: OpenApiTypes.OBJECT,
+            400: OpenApiTypes.OBJECT,
+            401: OpenApiTypes.OBJECT,
+            404: OpenApiTypes.OBJECT
         },
         examples=[
             OpenApiExample(
-                name="Example coffee details",
+                name="Successful Response",
                 description="",
                 value={
-                    "id": 1,
-                    "type": "mocha",
-                    "temperature": "hot",
-                    "caffeine_amount": 105,
-                    "price": 3.75
+                    "results": [
+                        {
+                            "id": 1,
+                            "type": "mocha",
+                            "temperature": "hot",
+                            "caffeine_amount": 105,
+                            "price": 3.75
+                        },
+                        {
+                            "id": "2",
+                            "coffee_type": "latte",
+                            "temperature": "hot",
+                             "caffeine_amount": 95,
+                            "price": 2.5
+                        },
+                        {
+                            "id": "3",
+                            "coffee_type": "cortado",
+                            "temperature": "hot",
+                            "caffeine_amount": 130,
+                            "price": 4.0
+                        }
+                    ]
                 },
-                response_only=True
+                response_only=True,
+                status_codes=["200"]
+            ),
+            OpenApiExample(
+                name="Bad Request",
+                description="",
+                value={"detail": "The request body could not be read properly."},
+                response_only=True,
+                status_codes=["400"],
+            ),
+            OpenApiExample(
+                name="Unauthorized",
+                description="",
+                value={"detail": "Authentication credentials were not provided."},
+                response_only=True,
+                status_codes=["401"],
+            ),
+            OpenApiExample(
+                name="Not Found",
+                description="",
+                value={"detail": "No Coffee matches the given query."},
+                response_only=True,
+                status_codes=["404"],
             ),
         ],
-        methods=['GET'],
-        description="Get all coffees in the inventory. The response includes information about each coffee's type, temperature, caffeine amount, and price."
     )
-    def get(self, request):
-        coffee = Coffee.objects.all()
-        serializer = CoffeeSerializer(coffee, many=True)
+    def list(self, request):
+        queryset = Coffee.objects.all()
+        serializer = CoffeeSerializer(queryset, many=True)
         return Response(serializer.data)
-    
-class GetCoffeeByIdView(APIView):
-    
-    authentication_classes = [JWTAuthentication]
-    permission_classes = [IsAuthenticated]
-    
+
     @extend_schema(
-        operation_id="get_coffee_by_id",
-        request=CoffeeSerializer,
+        operation_id="retrieve_coffee",
+        description="Returns a single coffee object based on its ID",
         responses={
             200: CoffeeSerializer,
             400: OpenApiTypes.OBJECT,
@@ -66,15 +108,16 @@ class GetCoffeeByIdView(APIView):
                     "id": 1,
                     "type": "mocha",
                     "temperature": "hot",
-                    "caffeine_amount": "105",
-                    "price": "3.75"
+                    "caffeine_amount": 105,
+                    "price": 3.75
                 },
                 response_only=True
             ),
             OpenApiExample(
             name="Bad Request",
             description="",
-            value={"detail": "The request body could not be read properly"},  
+            value={"detail": "The request body could not be read properly."
+            },  
             response_only=True,
             status_codes=["400"],
             ),
@@ -93,24 +136,27 @@ class GetCoffeeByIdView(APIView):
             status_codes=["404"],
             ),
         ],
-        methods=['GET'],
-        description="Get a coffee by ID. The response includes information about the coffee type, temperature, caffeine amount, and price for the coffee."
     )
-    def get(self, request, pk):
-        coffee = get_object_or_404(Coffee, pk=pk)
-        serializer = CoffeeSerializer(coffee)
+    def retrieve(self, request, pk=None):
+        queryset = Coffee.objects.all()
+        user = get_object_or_404(queryset, pk=pk)
+        serializer = CoffeeSerializer(user)
         return Response(serializer.data)
     
-class GetAllSnacksView(APIView):
+
+class SnackViewSet(viewsets.ModelViewSet):
     
     authentication_classes = [JWTAuthentication]
     permission_classes = [IsAuthenticated]
     
-    @extend_schema( 
-        operation_id="get_all_snacks",
-        request=None,
+    serializer_class = SnackSerializer
+    queryset = Snack.objects.all()
+    
+    @extend_schema(
+        operation_id="list_snacks",
+        description="Returns a list of all snack objects in the database",
         responses={
-            200: SnackSerializer,
+            200: SnackSerializer(many=True),
             400: OpenApiTypes.OBJECT,
             401: OpenApiTypes.OBJECT,
             404: OpenApiTypes.OBJECT
@@ -120,9 +166,9 @@ class GetAllSnacksView(APIView):
                 name="Example snack details",
                 description="",
                 value={
-                    "id": 1,
-                    "snack_name": "muffin", 
-                    "price": 3.00
+                    "id": 3,
+                    "product_name": "croissant", 
+                    "price": 2.00
                 },
                 response_only=True
             ),
@@ -149,23 +195,15 @@ class GetAllSnacksView(APIView):
             status_codes=["404"],
             ),
         ],
-        methods=['GET'],        
-        description="Gets all snacks in the inventory. The response includes information about each snack's name and price."
-    )            
-    def get(self, request):
-        snack = Snack.objects.all()
-        serializer = SnackSerializer(snack, many=True)
+    )
+    def list(self, request):
+        queryset = Snack.objects.all()
+        serializer = SnackSerializer(queryset, many=True)
         return Response(serializer.data)
-    
 
-class GetSnackByIdView(APIView):
-    
-    authentication_classes = [JWTAuthentication]
-    permission_classes = [IsAuthenticated]
-    
-    @extend_schema(  
-        operation_id="get_snack_by_id",
-        request=SnackSerializer,
+    @extend_schema(
+        operation_id="retrieve_snack",
+        description="Returns a single snack object based on its ID",
         responses={
             200: SnackSerializer,
             400: OpenApiTypes.OBJECT,
@@ -177,9 +215,9 @@ class GetSnackByIdView(APIView):
                 name="Example snack details",
                 description="",
                 value={
-                    "id": 1,
-                    "product_name": "muffin", 
-                    "price": 3.00
+                    "id": 3,
+                    "product_name": "croissant", 
+                    "price": 2.00
                 },
                 response_only=True
             ),
@@ -206,14 +244,12 @@ class GetSnackByIdView(APIView):
             status_codes=["404"],
             ),
         ],
-        methods=['GET'],
-        description="Get a snack by ID. The response includes information about the snack type, the brand name, and price.",
     )
-    def get(self, request, pk):
-        snack = get_object_or_404(Snack, pk=pk)
-        serializer = SnackSerializer(snack)
+    def retrieve(self, request, pk=None):
+        queryset = Coffee.objects.all()
+        user = get_object_or_404(queryset, pk=pk)
+        serializer = CoffeeSerializer(user)
         return Response(serializer.data)
-
 
 class UserSignupView(APIView):
 
