@@ -159,7 +159,7 @@ class GetResourceById(TestCase):
         self.assertIsNotNone(token, "Token should be present in the response")      
         
         # Send GET request
-        response = self.client.get('/api/coffees/2/', HTTP_AUTHORIZATION="Bearer " + token)        
+        response = self.client.get('/api/coffees/2/', HTTP_AUTHORIZATION=f'Bearer {token}')        
         
         print(f"Response content: {response.content}")
         
