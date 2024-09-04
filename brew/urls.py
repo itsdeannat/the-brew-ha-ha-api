@@ -13,5 +13,5 @@ router.register(r'snacks', SnackViewSet, basename='snack')
 urlpatterns = [
     path('api/signup/', UserSignupView.as_view(), name='signup'),
     path('api/ping/', PingView.as_view(), name='ping'),
-    path('', include(router.urls)) 
+    path('api/', include(router.urls)) 
 ]
