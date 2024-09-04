@@ -279,6 +279,17 @@ components:
   schemas:
     Coffee:
       type: object
+      description: |-
+        Serializer for the coffee model.
+
+        Converts Coffee model instances into JSON format.
+
+        Fields:
+            id (int): The unique identifier for the coffee.
+            coffee_type (str): The name or type of the coffee, e.g., 'Espresso', 'Latte'.
+            temperature (str): The serving temperature of the coffee, e.g., 'Hot', 'Iced'.
+            caffeine_amount (int): The amount of caffeine in milligrams.
+            price (float): The price of the coffee in USD.
       properties:
         id:
           type: string
@@ -304,6 +315,15 @@ components:
       - temperature
     Snack:
       type: object
+      description: |-
+        Serializer for the snack model.
+
+        Converts Snack model instances into JSON format.
+
+        Fields:
+            id (int): The unique identifier for the snack.
+            snack_name (str): The name of the snack, e.g. 'Muffin', 'Chips'
+            price (float): The price of the snack in USD.
       properties:
         id:
           type: string
@@ -314,7 +334,7 @@ components:
         price:
           type: number
           format: double
-          description: The price of the coffee in USD
+          description: The price of the snack in USD
       required:
       - id
       - price
