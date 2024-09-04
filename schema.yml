@@ -62,7 +62,6 @@ paths:
                     caffeine_amount: '105'
                     price: '3.75'
                   summary: Example coffee details
-                  description: A coffee object
           description: ''
         '400':
           content:
