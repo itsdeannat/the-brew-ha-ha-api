@@ -13,5 +13,5 @@ urlpatterns = [
     path('api/coffees/', GetAllCoffeesView.as_view(), name='get_all_coffees'),
     path('api/snacks/', GetAllSnacksView.as_view(), name='get_all_snacks'),
     path('api/coffees/<int:pk>/', GetCoffeeByIdView.as_view(), name='get_coffee_by_id'),
-    path('api/snacks/<int:pk>', GetSnackByIdView.as_view(), name='get_snack_by_id')    
+    path('api/snacks/<int:pk>/', GetSnackByIdView.as_view(), name='get_snack_by_id')    
 ]
