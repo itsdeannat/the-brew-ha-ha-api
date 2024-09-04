@@ -7,9 +7,8 @@ info:
 paths:
   /api/coffees/:
     get:
-      operationId: get_all_coffees
-      description: Get all coffees in the inventory. The response includes information
-        about each coffee's type, temperature, caffeine amount, and price.
+      operationId: list_coffees
+      description: Returns a list of all coffee objects in the database
       tags:
       - coffees
       security:
@@ -19,29 +18,74 @@ paths:
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Coffee'
+                type: object
+                additionalProperties: {}
               examples:
-                ExampleCoffeeDetails:
+                SuccessfulResponse:
                   value:
-                  - id: 1
-                    type: mocha
-                    temperature: hot
-                    caffeine_amount: 105
-                    price: 3.75
-                  summary: Example coffee details
+                    results:
+                    - id: 1
+                      type: mocha
+                      temperature: hot
+                      caffeine_amount: 105
+                      price: 3.75
+                    - id: '2'
+                      coffee_type: latte
+                      temperature: hot
+                      caffeine_amount: 95
+                      price: 2.5
+                    - id: '3'
+                      coffee_type: cortado
+                      temperature: hot
+                      caffeine_amount: 130
+                      price: 4.0
+                  summary: Successful Response
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: {}
+              examples:
+                BadRequest:
+                  value:
+                    detail: The request body could not be read properly.
+                  summary: Bad Request
+          description: ''
+        '401':
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: {}
+              examples:
+                Unauthorized:
+                  value:
+                    detail: Authentication credentials were not provided.
+          description: ''
+        '404':
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: {}
+              examples:
+                NotFound:
+                  value:
+                    detail: No Coffee matches the given query.
+                  summary: Not Found
           description: ''
   /api/coffees/{id}/:
     get:
-      operationId: get_coffee_by_id
-      description: Get a coffee by ID. The response includes information about the
-        coffee type, temperature, caffeine amount, and price for the coffee.
+      operationId: retrieve_coffee
+      description: Returns a single coffee object based on its ID
       parameters:
       - in: path
         name: id
         schema:
           type: integer
+        description: A unique integer value identifying this coffee.
         required: true
       tags:
       - coffees
@@ -59,8 +103,8 @@ paths:
                     id: 1
                     type: mocha
                     temperature: hot
-                    caffeine_amount: '105'
-                    price: '3.75'
+                    caffeine_amount: 105
+                    price: 3.75
                   summary: Example coffee details
           description: ''
         '400':
@@ -72,7 +116,7 @@ paths:
               examples:
                 BadRequest:
                   value:
-                    detail: The request body could not be read properly
+                    detail: The request body could not be read properly.
                   summary: Bad Request
           description: ''
         '401':
@@ -100,9 +144,15 @@ paths:
           description: ''
   /api/snacks/:
     get:
-      operationId: get_all_snacks
-      description: Gets all snacks in the inventory. The response includes information
-        about each snack's name and price.
+      operationId: list_snacks
+      description: Returns a list of all snack objects in the database
+      parameters:
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
       tags:
       - snacks
       security:
@@ -112,13 +162,17 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Snack'
+                $ref: '#/components/schemas/PaginatedSnackList'
               examples:
                 ExampleSnackDetails:
                   value:
-                    id: 1
-                    snack_name: muffin
-                    price: 3.0
+                    count: 123
+                    next: http://api.example.org/accounts/?page=4
+                    previous: http://api.example.org/accounts/?page=2
+                    results:
+                    - id: 3
+                      product_name: croissant
+                      price: 2.0
                   summary: Example snack details
           description: ''
         '400':
@@ -158,14 +212,14 @@ paths:
           description: ''
   /api/snacks/{id}/:
     get:
-      operationId: get_snack_by_id
-      description: Get a snack by ID. The response includes information about the
-        snack type, the brand name, and price.
+      operationId: retrieve_snack
+      description: Returns a single snack object based on its ID
       parameters:
       - in: path
         name: id
         schema:
           type: integer
+        description: A unique integer value identifying this snack.
         required: true
       tags:
       - snacks
@@ -180,9 +234,9 @@ paths:
               examples:
                 ExampleSnackDetails:
                   value:
-                    id: 1
-                    product_name: muffin
-                    price: 3.0
+                    id: 3
+                    product_name: croissant
+                    price: 2.0
                   summary: Example snack details
           description: ''
         '400':
@@ -284,7 +338,7 @@ components:
         Converts Coffee model instances into JSON format.
 
         Fields:
-            id (int): The unique identifier for the coffee.
+            id (int): A unique integer value identifying this coffee.
             coffee_type (str): The name or type of the coffee, e.g., 'Espresso', 'Latte'.
             temperature (str): The serving temperature of the coffee, e.g., 'Hot', 'Iced'.
             caffeine_amount (int): The amount of caffeine in milligrams.
@@ -292,7 +346,7 @@ components:
       properties:
         id:
           type: string
-          description: The unique identifer of the coffee
+          description: A unique integer value identifying this coffee.
         coffee_type:
           type: string
           description: The type of coffee
@@ -312,6 +366,29 @@ components:
       - id
       - price
       - temperature
+    PaginatedSnackList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Snack'
     Snack:
       type: object
       description: |-
