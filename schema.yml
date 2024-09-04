@@ -157,7 +157,7 @@ paths:
                     detail: No Snack matches the given query.
                   summary: Not Found
           description: ''
-  /api/snacks/{id}:
+  /api/snacks/{id}/:
     get:
       operationId: get_snack_by_id
       description: Get a snack by ID. The response includes information about the
@@ -185,7 +185,6 @@ paths:
                     product_name: muffin
                     price: 3.0
                   summary: Example snack details
-                  description: A snack object
           description: ''
         '400':
           content:
