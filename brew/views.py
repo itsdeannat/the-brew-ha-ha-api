@@ -61,7 +61,7 @@ class GetCoffeeByIdView(APIView):
         examples=[
             OpenApiExample(
                 name="Example coffee details",
-                description="A coffee object",
+                description="",
                 value={
                     "id": 1,
                     "type": "mocha",
