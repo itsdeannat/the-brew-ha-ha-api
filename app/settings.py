@@ -144,7 +144,7 @@ REST_FRAMEWORK = {
 
 SPECTACULAR_SETTINGS = {
     'TITLE': 'The Brew Ha Ha API',
-    'DESCRIPTION': 'The Brew Ha Ha API allows third-party applications to access our extensive line of coffee and snack products. As a developer, you can access various endpoints to get a single product, get a collection of products, or place orders. Our API enables seamless integration with popular e-commerce platforms such as Shopfiy, Wix, and Square.',
+    'DESCRIPTION': 'The Brew Ha Ha API allows third-party applications to access our extensive line of coffee and snack products. As a developer, you can access various endpoints to get a single product, get a collection of products, or place orders. Our API enables seamless integration with popular e-commerce platforms such as Shopify, Wix, and Square.',
     'VERSION': '1.0.0',
     'SERVE_INCLUDE_SCHEMA': False,
     'TAGS': [
