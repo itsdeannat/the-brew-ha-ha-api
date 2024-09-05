@@ -12,7 +12,7 @@ class CoffeeSerializer(serializers.ModelSerializer):
 
     Fields:
         id (int): A unique integer value identifying this coffee.
-        coffee_type (str): The name or type of the coffee, e.g., 'Espresso', 'Latte'.
+        coffee_name (str): The name or type of the coffee, e.g., 'Espresso', 'Latte'.
         temperature (str): The serving temperature of the coffee, e.g., 'Hot', 'Iced'.
         caffeine_amount (int): The amount of caffeine in milligrams.
         price (float): The price of the coffee in USD.
@@ -21,15 +21,15 @@ class CoffeeSerializer(serializers.ModelSerializer):
     """
     
     id = serializers.CharField(help_text='A unique integer value identifying this coffee.')
-    coffee_type = serializers.CharField(help_text='The type of coffee')
+    coffee_name = serializers.CharField(help_text='The type of coffee')
     temperature = serializers.CharField(help_text='The temperature of the coffee')
     caffeine_amount = serializers.IntegerField(help_text='The amount of caffeine in the coffee')
     price = serializers.FloatField(help_text='The price of the coffee in USD')
     description = serializers.CharField(help_text='A description of the coffee')
-    in_stock = serializers.BoolField(help_text='Whether or not the coffee is in stock')
+    in_stock = serializers.BooleanField(help_text='Whether or not the coffee is in stock')
     class Meta:
         model=Coffee
-        fields=['id', 'coffee_type', 'temperature', 'caffeine_amount', 'price', 'description', 'in_stock']
+        fields=['id', 'coffee_name', 'temperature', 'caffeine_amount', 'price', 'description', 'in_stock']
         
 class SnackSerializer(serializers.ModelSerializer):
     """Serializer for the snack model. 
@@ -48,7 +48,7 @@ class SnackSerializer(serializers.ModelSerializer):
     snack_name = serializers.CharField(help_text='The name of the snack')
     price = serializers.FloatField(help_text='The price of the snack in USD')
     description = serializers.CharField(help_text='A description of the snack')
-    in_stock = serializers.BoolField(help_text='Whether or not the snack is in stock')
+    in_stock = serializers.BooleanField(help_text='Whether or not the snack is in stock')
     
     class Meta:
         model=Snack

@@ -39,24 +39,30 @@ class CoffeeViewSet(ReadOnlyModelViewSet):
                     "results": [
                         {
                             "id": 1,
-                            "type": "mocha",
+                            "coffee_type": "mocha",
                             "temperature": "hot",
                             "caffeine_amount": 105,
-                            "price": 3.75
+                            "price": 3.75,
+                            "description": "A rich, decadent blend of espresso and chocolate",
+                            "in_stock": True
                         },
                         {
                             "id": "2",
                             "coffee_type": "latte",
                             "temperature": "hot",
-                             "caffeine_amount": 95,
-                            "price": 2.5
+                            "caffeine_amount": 95,
+                            "price": 2.5,
+                            "description": "Rich and smooth brew with a hint of caramel",
+                            "in_stock": False
                         },
                         {
                             "id": "3",
                             "coffee_type": "cortado",
                             "temperature": "hot",
                             "caffeine_amount": 130,
-                            "price": 4.0
+                            "price": 4.0,
+                            "description": "Made with beans picked from the coast of Spain",
+                            "in_stock": True
                         }
                     ]
                 },
@@ -106,10 +112,12 @@ class CoffeeViewSet(ReadOnlyModelViewSet):
                 description="",
                 value={
                     "id": 1,
-                    "type": "mocha",
+                    "coffee_type": "mocha",
                     "temperature": "hot",
-                    "caffeine_amount": 105,
-                    "price": 3.75
+                    "cafeine_amount": 105,
+                    "price": 3.75,
+                    "description": "A rich, decadent blend of espresso and chocolate",
+                    "in_stock": True
                 },
                 response_only=True
             ),
@@ -169,18 +177,24 @@ class SnackViewSet(ReadOnlyModelViewSet):
                     "results": [
                         {
                             "id": 1,
-                            "snack_type": "muffin",
-                            "price": 3.00
+                            "snack_type": "blueberry_muffin",
+                            "price": 3.00,
+                            "description": "Freshly baked muffin with ripe blue blueberries",
+                            "in_stock": True
                         },
                         {
                             "id": 2,
-                            "snack_type": "bagel",
-                            "price": 1.50
+                            "snack_type": "cinnamon_bagel",
+                            "price": 1.50,
+                            "description": "A buttery soft bagel with decadent swirls of cinnamon",
+                            "in_stock": True
                         },
                         {
                             "id": 3,
                             "snack_type": "croissant",
-                            "price": 2.00
+                            "price": 2.00,
+                            "description": "A flaky croissant sure to delight",
+                            "in_stock": False
                         }
                     ]
                 },
@@ -230,8 +244,10 @@ class SnackViewSet(ReadOnlyModelViewSet):
                 description="",
                 value={
                     "id": 3,
-                    "product_name": "croissant", 
-                    "price": 2.00
+                    "snack_type": "croissant",
+                    "price": 2.00,
+                    "description": "A flaky croissant sure to delight",
+                    "in_stock": False
                 },
                 response_only=True
             ),
