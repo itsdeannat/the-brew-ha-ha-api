@@ -7,9 +7,256 @@ info:
 paths:
   /api/coffees/:
     get:
-      operationId: coffees_retrieve
-      description: Get all coffees in the inventory. The response includes information
-        about each coffee's type, temperature, caffeine amount, and price.
+      operationId: list_coffees
+      description: Returns a list of all coffee objects in the database
+      tags:
+      - coffees
+      security:
+      - JWTAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: {}
+              examples:
+                SuccessfulResponse:
+                  value:
+                    results:
+                    - id: 1
+                      type: mocha
+                      temperature: hot
+                      caffeine_amount: 105
+                      price: 3.75
+                    - id: '2'
+                      coffee_type: latte
+                      temperature: hot
+                      caffeine_amount: 95
+                      price: 2.5
+                    - id: '3'
+                      coffee_type: cortado
+                      temperature: hot
+                      caffeine_amount: 130
+                      price: 4.0
+                  summary: Successful Response
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: {}
+              examples:
+                BadRequest:
+                  value:
+                    detail: The request body could not be read properly.
+                  summary: Bad Request
+          description: ''
+        '401':
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: {}
+              examples:
+                Unauthorized:
+                  value:
+                    detail: Authentication credentials were not provided.
+          description: ''
+        '404':
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: {}
+              examples:
+                NotFound:
+                  value:
+                    detail: No Coffee matches the given query.
+                  summary: Not Found
+          description: ''
+  /api/coffees/{id}/:
+    get:
+      operationId: retrieve_coffee
+      description: Returns a single coffee object based on its ID
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this coffee.
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TokenObtainPair'
+          description: ''
+  /api/token/refresh/:
+    post:
+      operationId: api_token_refresh_create
+      description: |-
+        Takes a refresh type JSON web token and returns an access type JSON web
+        token if the refresh token is valid.
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TokenRefresh'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/TokenRefresh'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/TokenRefresh'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TokenRefresh'
+          description: ''
+  /coffees/:
+    get:
+      operationId: list_coffees
+      description: Returns a list of all coffee objects in the database
+      tags:
+      - coffees
+      security:
+      - JWTAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: {}
+              examples:
+                SuccessfulResponse:
+                  value:
+                    id: 1
+                    type: mocha
+                    temperature: hot
+                    caffeine_amount: 105
+                    price: 3.75
+                  summary: Example coffee details
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: {}
+              examples:
+                BadRequest:
+                  value:
+                    detail: The request body could not be read properly.
+                  summary: Bad Request
+          description: ''
+        '401':
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: {}
+              examples:
+                Unauthorized:
+                  value:
+                    detail: Authentication credentials were not provided.
+          description: ''
+        '404':
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: {}
+              examples:
+                NotFound:
+                  value:
+                    detail: No Coffee matches the given query.
+                  summary: Not Found
+          description: ''
+  /coffees/{id}/:
+    get:
+      operationId: list_snacks
+      description: Returns a list of all snack objects in the database
+      tags:
+      - snacks
+      security:
+      - JWTAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: {}
+              examples:
+                ExampleSnackDetails:
+                  value:
+                    results:
+                    - id: 1
+                      snack_type: muffin
+                      price: 3.0
+                    - id: 2
+                      snack_type: bagel
+                      price: 1.5
+                    - id: 3
+                      snack_type: croissant
+                      price: 2.0
+                  summary: Example snack details
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: {}
+              examples:
+                BadRequest:
+                  value:
+                    detail: The request body could not be read properly.
+                  summary: Bad Request
+          description: ''
+        '401':
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: {}
+              examples:
+                Unauthorized:
+                  value:
+                    detail: Authentication credentials were not provided.
+          description: ''
+        '404':
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: {}
+              examples:
+                NotFound:
+                  value:
+                    detail: No Snack matches the given query.
+                  summary: Not Found
+          description: ''
+  /api/snacks/{id}/:
+    get:
+      operationId: retrieve_snack
+      description: Returns a single snack object based on its ID
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this snack.
+        required: true
       tags:
       - coffees
       security:
@@ -39,7 +286,7 @@ paths:
               examples:
                 BadRequest:
                   value:
-                    detail: Request body could not be read properly.
+                    detail: The request body could not be read properly.
                   summary: Bad Request
           description: ''
         '401':
@@ -65,11 +312,17 @@ paths:
                     detail: No Coffee matches the given query.
                   summary: Not Found
           description: ''
-  /api/snacks/:
+  /snacks/:
     get:
-      operationId: snacks_retrieve
-      description: Gets all snacks in the inventory. The response includes information
-        about each snack's name and price.
+      operationId: list_snacks
+      description: Returns a list of all snack objects in the database
+      parameters:
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
       tags:
       - snacks
       security:
@@ -79,13 +332,13 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Snack'
+                $ref: '#/components/schemas/PaginatedSnackList'
               examples:
                 ExampleSnackDetails:
                   value:
-                    id: 1
-                    snack_name: muffin
-                    price: 3.0
+                    id: 3
+                    product_name: croissant
+                    price: 2.0
                   summary: Example snack details
           description: ''
         '400':
@@ -97,7 +350,7 @@ paths:
               examples:
                 BadRequest:
                   value:
-                    detail: Request body could not be read properly.
+                    detail: The request body could not be read properly.
                   summary: Bad Request
           description: ''
         '401':
@@ -123,68 +376,193 @@ paths:
                     detail: No Snack matches the given query.
                   summary: Not Found
           description: ''
-  /api/token/:
     post:
-      operationId: token_create
-      description: |-
-        Takes a set of user credentials and returns an access and refresh JSON web
-        token pair to prove the authentication of those credentials.
+      operationId: snacks_create
       tags:
-      - token
+      - snacks
       requestBody:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/TokenObtainPair'
+              $ref: '#/components/schemas/Snack'
           application/x-www-form-urlencoded:
             schema:
-              $ref: '#/components/schemas/TokenObtainPair'
+              $ref: '#/components/schemas/Snack'
           multipart/form-data:
             schema:
-              $ref: '#/components/schemas/TokenObtainPair'
+              $ref: '#/components/schemas/Snack'
         required: true
+      security:
+      - JWTAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Snack'
+          description: ''
+  /snacks/{id}/:
+    get:
+      operationId: retrieve_snack
+      description: Returns a single snack object based on its ID
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this snack.
+        required: true
+      tags:
+      - snacks
+      security:
+      - JWTAuth: []
       responses:
         '200':
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/TokenObtainPair'
+                $ref: '#/components/schemas/Snack'
+              examples:
+                ExampleSnackDetails:
+                  value:
+                    id: 3
+                    product_name: croissant
+                    price: 2.0
+                  summary: Example snack details
           description: ''
-  /api/token/refresh/:
-    post:
-      operationId: token_refresh_create
-      description: |-
-        Takes a refresh type JSON web token and returns an access type JSON web
-        token if the refresh token is valid.
+        '400':
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: {}
+              examples:
+                BadRequest:
+                  value:
+                    detail: The request body could not be read properly.
+                  summary: Bad Request
+          description: ''
+        '401':
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: {}
+              examples:
+                Unauthorized:
+                  value:
+                    detail: Authentication credentials were not provided.
+          description: ''
+        '404':
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: {}
+              examples:
+                NotFound:
+                  value:
+                    detail: No Snack matches the given query.
+                  summary: Not Found
+          description: ''
+    put:
+      operationId: snacks_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this snack.
+        required: true
       tags:
-      - token
+      - snacks
       requestBody:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/TokenRefresh'
+              $ref: '#/components/schemas/Snack'
           application/x-www-form-urlencoded:
             schema:
-              $ref: '#/components/schemas/TokenRefresh'
+              $ref: '#/components/schemas/Snack'
           multipart/form-data:
             schema:
-              $ref: '#/components/schemas/TokenRefresh'
+              $ref: '#/components/schemas/Snack'
         required: true
+      security:
+      - JWTAuth: []
       responses:
         '200':
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/TokenRefresh'
+                $ref: '#/components/schemas/Snack'
           description: ''
+    patch:
+      operationId: snacks_partial_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this snack.
+        required: true
+      tags:
+      - snacks
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedSnack'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedSnack'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedSnack'
+      security:
+      - JWTAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Snack'
+          description: ''
+    delete:
+      operationId: snacks_destroy
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this snack.
+        required: true
+      tags:
+      - snacks
+      security:
+      - JWTAuth: []
+      responses:
+        '204':
+          description: No response body
 components:
   schemas:
     Coffee:
       type: object
+      description: |-
+        Serializer for the coffee model.
+
+        Converts Coffee model instances into JSON format.
+
+        Fields:
+            id (int): A unique integer value identifying this coffee.
+            coffee_type (str): The name or type of the coffee, e.g., 'Espresso', 'Latte'.
+            temperature (str): The serving temperature of the coffee, e.g., 'Hot', 'Iced'.
+            caffeine_amount (int): The amount of caffeine in milligrams.
+            price (float): The price of the coffee in USD.
       properties:
         id:
           type: string
-          description: The unique identifer of the coffee
+          description: A unique integer value identifying this coffee.
         coffee_type:
           type: string
           description: The type of coffee
@@ -204,8 +582,40 @@ components:
       - id
       - price
       - temperature
-    Snack:
+    PaginatedSnackList:
       type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Snack'
+    PatchedSnack:
+      type: object
+      description: |-
+        Serializer for the snack model.
+
+        Converts Snack model instances into JSON format.
+
+        Fields:
+            id (int): The unique identifier for the snack.
+            snack_name (str): The name of the snack, e.g. 'Muffin', 'Chips'
+            price (float): The price of the snack in USD.
       properties:
         id:
           type: string
@@ -216,7 +626,29 @@ components:
         price:
           type: number
           format: double
-          description: The price of the coffee in USD
+          description: The price of the snack in USD
+    Snack:
+      type: object
+      description: |-
+        Serializer for the snack model.
+
+        Converts Snack model instances into JSON format.
+
+        Fields:
+            id (int): The unique identifier for the snack.
+            snack_name (str): The name of the snack, e.g. 'Muffin', 'Chips'
+            price (float): The price of the snack in USD.
+      properties:
+        id:
+          type: string
+          description: The unique identifier for the snack
+        snack_name:
+          type: string
+          description: The name of the snack
+        price:
+          type: number
+          format: double
+          description: The price of the snack in USD
       required:
       - id
       - price

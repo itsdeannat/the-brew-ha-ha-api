@@ -1,4 +1,5 @@
 from django.test import TestCase
+from .models import Coffee
 
 # Create your tests here.
 class SignupTestCalls(TestCase):
@@ -84,11 +85,12 @@ class GetAllResourcesCalls(TestCase):
         
         # Send GET request
         response = self.client.get('/api/coffees/', HTTP_AUTHORIZATION=f'Bearer {token}')
+        
         self.assertEqual(response.status_code, 200)
         
     def test_authenticated_get_snacks(self):
         '''
-        Tests that an authenticated user can make a GET request to /snack
+        Tests that an authenticated user can make a GET request to /snacks
         '''
         user_data = {
             'username': 'johndoe',
@@ -129,3 +131,36 @@ class GetAllResourcesCalls(TestCase):
         # Send GET request
         response = self.client.get('/api/snacks/', HTTP_AUTHORIZATION=f'Bearer {token}')
         self.assertEqual(response.status_code, 401)
+        
+class GetResourceById(TestCase):
+        
+    def test_get_resource_id(self):
+        '''Tests that a user can get a resource by id'''
+        
+        # Create a coffee with an id of 2
+        Coffee.objects.create(id=2, coffee_type='latte', temperature='hot', caffeine_amount=95, price=2.5)
+        
+        # Set example data 
+        user_data = {
+            'username': 'johndoe',
+            'password': 'password123'
+            }
+        
+        # User signs up for API
+        response = self.client.post('/api/signup/', user_data, format='json')
+        self.assertEqual(response.status_code, 201)
+        
+        # User gets a JWT
+        response = self.client.post('/api/token/', user_data, follow=True)
+        self.assertEqual(response.status_code, 200)
+        
+        #Get the JWT from response
+        token = response.json().get('access')
+        self.assertIsNotNone(token, "Token should be present in the response")      
+        
+        # Send GET request
+        response = self.client.get('/api/coffees/2/', HTTP_AUTHORIZATION=f'Bearer {token}')        
+        
+        print(f"Response content: {response.content}")
+        
+        self.assertEqual(response.status_code, 200)
