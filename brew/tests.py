@@ -138,7 +138,7 @@ class GetResourceById(TestCase):
         '''Tests that a user can get a resource by id'''
         
         # Create a coffee with an id of 2
-        Coffee.objects.create(id=2, coffee_type='latte', temperature='hot', caffeine_amount=95, price=2.5)
+        Coffee.objects.create(id=2, coffee_name='latte', temperature='hot', caffeine_amount=95, price=2.5, description='Rich and smooth brew with a hint of caramel', in_stock=True)
         
         # Set example data 
         user_data = {

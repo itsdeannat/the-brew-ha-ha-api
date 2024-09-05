@@ -6,8 +6,8 @@ from .models import Snack
 
 @admin.register(Coffee)
 class CoffeeAdmin(admin.ModelAdmin):
-    list_display = ('coffee_type', 'temperature', 'caffeine_amount', 'price')  
+    list_display = ('coffee_name', 'temperature', 'caffeine_amount', 'price', 'description', 'in_stock')  
     
 @admin.register(Snack)
 class SnackAdmin(admin.ModelAdmin):
-    list_display = ('snack_name', 'price')
+    list_display = ('snack_name', 'price', 'description', 'in_stock')

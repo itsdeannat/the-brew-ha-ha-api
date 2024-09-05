@@ -28,20 +28,26 @@ paths:
                   value:
                     results:
                     - id: 1
-                      type: mocha
+                      coffee_type: mocha
                       temperature: hot
                       caffeine_amount: 105
                       price: 3.75
+                      description: A rich, decadent blend of espresso and chocolate
+                      in_stock: true
                     - id: '2'
                       coffee_type: latte
                       temperature: hot
                       caffeine_amount: 95
                       price: 2.5
+                      description: Rich and smooth brew with a hint of caramel
+                      in_stock: false
                     - id: '3'
                       coffee_type: cortado
                       temperature: hot
                       caffeine_amount: 130
                       price: 4.0
+                      description: Made with beans picked from the coast of Spain
+                      in_stock: true
                   summary: Successful Response
           description: ''
         '400':
@@ -104,10 +110,12 @@ paths:
                 ExampleCoffeeDetails:
                   value:
                     id: 1
-                    type: mocha
+                    coffee_type: mocha
                     temperature: hot
-                    caffeine_amount: 105
+                    cafeine_amount: 105
                     price: 3.75
+                    description: A rich, decadent blend of espresso and chocolate
+                    in_stock: true
                   summary: Example coffee details
           description: ''
         '400':
@@ -165,14 +173,20 @@ paths:
                   value:
                     results:
                     - id: 1
-                      snack_type: muffin
+                      snack_type: blueberry_muffin
                       price: 3.0
+                      description: Freshly baked muffin with ripe blue blueberries
+                      in_stock: true
                     - id: 2
-                      snack_type: bagel
+                      snack_type: cinnamon_bagel
                       price: 1.5
+                      description: A buttery soft bagel with decadent swirls of cinnamon
+                      in_stock: true
                     - id: 3
                       snack_type: croissant
                       price: 2.0
+                      description: A flaky croissant sure to delight
+                      in_stock: false
                   summary: Example snack details
           description: ''
         '400':
@@ -235,8 +249,10 @@ paths:
                 ExampleSnackDetails:
                   value:
                     id: 3
-                    product_name: croissant
+                    snack_type: croissant
                     price: 2.0
+                    description: A flaky croissant sure to delight
+                    in_stock: false
                   summary: Example snack details
           description: ''
         '400':
@@ -339,15 +355,17 @@ components:
 
         Fields:
             id (int): A unique integer value identifying this coffee.
-            coffee_type (str): The name or type of the coffee, e.g., 'Espresso', 'Latte'.
+            coffee_name (str): The name or type of the coffee, e.g., 'Espresso', 'Latte'.
             temperature (str): The serving temperature of the coffee, e.g., 'Hot', 'Iced'.
             caffeine_amount (int): The amount of caffeine in milligrams.
             price (float): The price of the coffee in USD.
+            description (str): A short description of the coffee.
+            in_stock (bool): Whether or not the coffee is available for purchase.
       properties:
         id:
           type: string
           description: A unique integer value identifying this coffee.
-        coffee_type:
+        coffee_name:
           type: string
           description: The type of coffee
         temperature:
@@ -360,10 +378,18 @@ components:
           type: number
           format: double
           description: The price of the coffee in USD
+        description:
+          type: string
+          description: A description of the coffee
+        in_stock:
+          type: boolean
+          description: Whether or not the coffee is in stock
       required:
       - caffeine_amount
-      - coffee_type
+      - coffee_name
+      - description
       - id
+      - in_stock
       - price
       - temperature
     Snack:
@@ -377,6 +403,8 @@ components:
             id (int): The unique identifier for the snack.
             snack_name (str): The name of the snack, e.g. 'Muffin', 'Chips'
             price (float): The price of the snack in USD.
+            description (str): A short description of the snack.
+            in_stock (bool): Whether or not the coffee is available for purchase.
       properties:
         id:
           type: string
@@ -388,8 +416,16 @@ components:
           type: number
           format: double
           description: The price of the snack in USD
+        description:
+          type: string
+          description: A description of the snack
+        in_stock:
+          type: boolean
+          description: Whether or not the snack is in stock
       required:
+      - description
       - id
+      - in_stock
       - price
       - snack_name
     TokenObtainPair:
