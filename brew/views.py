@@ -156,7 +156,7 @@ class SnackViewSet(ReadOnlyModelViewSet):
         operation_id="list_snacks",
         description="Returns a list of all snack objects in the database",
         responses={
-            200: SnackSerializer(many=True),
+            200: OpenApiTypes.OBJECT,
             400: OpenApiTypes.OBJECT,
             401: OpenApiTypes.OBJECT,
             404: OpenApiTypes.OBJECT
@@ -166,9 +166,23 @@ class SnackViewSet(ReadOnlyModelViewSet):
                 name="Example snack details",
                 description="",
                 value={
-                    "id": 3,
-                    "product_name": "croissant", 
-                    "price": 2.00
+                    "results": [
+                        {
+                            "id": 1,
+                            "snack_type": "muffin",
+                            "price": 3.00
+                        },
+                        {
+                            "id": 2,
+                            "snack_type": "bagel",
+                            "price": 1.50
+                        },
+                        {
+                            "id": 3,
+                            "snack_type": "croissant",
+                            "price": 2.00
+                        }
+                    ]
                 },
                 response_only=True
             ),
