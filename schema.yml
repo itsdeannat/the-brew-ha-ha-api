@@ -146,13 +146,6 @@ paths:
     get:
       operationId: list_snacks
       description: Returns a list of all snack objects in the database
-      parameters:
-      - name: page
-        required: false
-        in: query
-        description: A page number within the paginated result set.
-        schema:
-          type: integer
       tags:
       - snacks
       security:
@@ -162,16 +155,20 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/PaginatedSnackList'
+                type: object
+                additionalProperties: {}
               examples:
                 ExampleSnackDetails:
                   value:
-                    count: 123
-                    next: http://api.example.org/accounts/?page=4
-                    previous: http://api.example.org/accounts/?page=2
                     results:
+                    - id: 1
+                      snack_type: muffin
+                      price: 3.0
+                    - id: 2
+                      snack_type: bagel
+                      price: 1.5
                     - id: 3
-                      product_name: croissant
+                      snack_type: croissant
                       price: 2.0
                   summary: Example snack details
           description: ''
@@ -366,29 +363,6 @@ components:
       - id
       - price
       - temperature
-    PaginatedSnackList:
-      type: object
-      required:
-      - count
-      - results
-      properties:
-        count:
-          type: integer
-          example: 123
-        next:
-          type: string
-          nullable: true
-          format: uri
-          example: http://api.example.org/accounts/?page=4
-        previous:
-          type: string
-          nullable: true
-          format: uri
-          example: http://api.example.org/accounts/?page=2
-        results:
-          type: array
-          items:
-            $ref: '#/components/schemas/Snack'
     Snack:
       type: object
       description: |-
