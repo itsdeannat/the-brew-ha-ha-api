@@ -16,7 +16,7 @@ class ProductSerializer(serializers.ModelSerializer):
         caffeine_amount (int): The amount of caffeine in milligrams.
         price (float): The price of the product in USD.
         description (str): A short description of the product.
-        in_stock (bool): Whether or not the product is available for purchase.
+        quantity (int): Amount of product available
     """
     id = serializers.CharField(help_text='A unique integer value identifying this product.')
     product_name = serializers.CharField(help_text='The product name')
@@ -24,11 +24,11 @@ class ProductSerializer(serializers.ModelSerializer):
     caffeine_amount = serializers.IntegerField(help_text='The amount of caffeine in the coffee', required=False)
     price = serializers.FloatField(help_text='The price of the product in USD')
     description = serializers.CharField(help_text='A description of the product')
-    in_stock = serializers.BooleanField(help_text='Whether or not the product is in stock')
+    quantity = serializers.IntegerField(help_text='Amount of product available')
     
     class Meta:
         model=Product
-        fields = fields=['id', 'product_name', 'temperature', 'caffeine_amount', 'price', 'description', 'in_stock']
+        fields = fields=['id', 'product_name', 'temperature', 'caffeine_amount', 'price', 'description', 'quantity']
 
 class UserSignupSerializer(serializers.ModelSerializer):
     """Serializer for user signups. 
