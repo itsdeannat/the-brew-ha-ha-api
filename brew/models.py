@@ -12,11 +12,11 @@ class Product(models.Model):
         caffeine_amount (int): The amount of caffeine in milligrams
         price (float): The price of the product
         description (str): A short description of the product
-        in_stock (bool): Whether the product is in stock
+        quantity (int): Amount of product available
     """    
     product_name = models.CharField(max_length=200, default='Default Description')
     temperature = models.CharField(max_length=500, blank=True, null=True)
     caffeine_amount = models.IntegerField(blank=True, null=True)
     price = models.FloatField()
-    description = models.CharField(max_length=200, default='Default Description')    
-    in_stock = models.BooleanField(default=True)
+    description = models.CharField(max_length=200, default='Default Description')  
+    quantity = models.IntegerField(default=True)
