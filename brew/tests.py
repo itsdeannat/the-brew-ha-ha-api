@@ -1,5 +1,5 @@
 from django.test import TestCase
-from .models import Coffee
+from .models import Product
 
 # Create your tests here.
 class SignupTestCalls(TestCase):
@@ -63,34 +63,9 @@ class JWTAuthenticationCalls(TestCase):
         
 class GetAllResourcesCalls(TestCase):
     
-    def test_authenticated_get_coffees(self):
+    def test_authenticated_get_products(self):
         '''
-        Tests that an authenticated user can make a GET request to /coffees
-        '''
-        user_data = {
-            'username': 'johndoe',
-            'password': 'password123'
-        }
-        # User signs up for API
-        response = self.client.post('/api/signup/', user_data, format='json')
-        self.assertEqual(response.status_code, 201)
-
-        # User gets a JWT
-        response = self.client.post('/api/token/', user_data, follow=True)
-        self.assertEqual(response.status_code, 200)
-        
-        #Get the JWT from response
-        token = response.json().get('access')
-        self.assertIsNotNone(token, "Token should be present in the response")
-        
-        # Send GET request
-        response = self.client.get('/api/coffees/', HTTP_AUTHORIZATION=f'Bearer {token}')
-        
-        self.assertEqual(response.status_code, 200)
-        
-    def test_authenticated_get_snacks(self):
-        '''
-        Tests that an authenticated user can make a GET request to /snacks
+        Tests that an authenticated user can make a GET request to /products
         '''
         user_data = {
             'username': 'johndoe',
@@ -109,10 +84,11 @@ class GetAllResourcesCalls(TestCase):
         self.assertIsNotNone(token, "Token should be present in the response")
         
         # Send GET request
-        response = self.client.get('/api/snacks/', HTTP_AUTHORIZATION=f'Bearer {token}')
+        response = self.client.get('/api/products/', HTTP_AUTHORIZATION=f'Bearer {token}')
+        
         self.assertEqual(response.status_code, 200)
         
-    def test_not_authenticated_get_snacks(self):
+    def test_not_authenticated_get_products(self):
         '''
         Tests that an user can't make a GET request if not authenticated
         '''
@@ -129,7 +105,7 @@ class GetAllResourcesCalls(TestCase):
         self.assertIsNone(token, "Token should not be present in the response")
         
         # Send GET request
-        response = self.client.get('/api/snacks/', HTTP_AUTHORIZATION=f'Bearer {token}')
+        response = self.client.get('/api/products/', HTTP_AUTHORIZATION=f'Bearer {token}')
         self.assertEqual(response.status_code, 401)
         
 class GetResourceById(TestCase):
@@ -137,8 +113,8 @@ class GetResourceById(TestCase):
     def test_get_resource_id(self):
         '''Tests that a user can get a resource by id'''
         
-        # Create a coffee with an id of 2
-        Coffee.objects.create(id=2, coffee_name='latte', temperature='hot', caffeine_amount=95, price=2.5, description='Rich and smooth brew with a hint of caramel', in_stock=True)
+        # Create a coffee with an id of 4
+        Product.objects.create(id=4, product_name='latte', temperature='hot', caffeine_amount=95, price=2.5, description='Rich and smooth brew with a hint of caramel', quantity=8)
         
         # Set example data 
         user_data = {
@@ -159,7 +135,7 @@ class GetResourceById(TestCase):
         self.assertIsNotNone(token, "Token should be present in the response")      
         
         # Send GET request
-        response = self.client.get('/api/coffees/2/', HTTP_AUTHORIZATION=f'Bearer {token}')        
+        response = self.client.get('/api/products/4/', HTTP_AUTHORIZATION=f'Bearer {token}')        
         
         print(f"Response content: {response.content}")
         
