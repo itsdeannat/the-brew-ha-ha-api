@@ -9,7 +9,7 @@ from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from .models import Product
-from .serializers import ProductSerializer, UserSignupSerializer
+from .serializers import ProductSerializer, UserSignupSerializer, OrderSerializer
 
 # Create your views here.
 
@@ -51,3 +51,13 @@ class PingView(APIView):
             "message": "Test ping successful!"
         }
         return Response(content, status=status.HTTP_200_OK)
+    
+class CreateOrderView(APIView):
+    def post(self, request, *args, **kwargs):
+        serializer = OrderSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+    
