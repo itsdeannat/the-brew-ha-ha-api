@@ -1,7 +1,7 @@
 from rest_framework import serializers
 from django.contrib.auth.models import User
 import re
-from .models import Product
+from .models import Product, Order, OrderItem
 
 class ProductSerializer(serializers.ModelSerializer):
     """
@@ -18,7 +18,7 @@ class ProductSerializer(serializers.ModelSerializer):
         description (str): A short description of the product.
         quantity (int): Amount of product available
     """
-    id = serializers.CharField(help_text='A unique integer value identifying this product.')
+    id = serializers.IntegerField(help_text='A unique integer value identifying this product.')
     product_name = serializers.CharField(help_text='The product name')
     temperature = serializers.CharField(help_text='The temperature of the coffee', required=False)
     caffeine_amount = serializers.IntegerField(help_text='The amount of caffeine in the coffee', required=False)
@@ -84,3 +84,33 @@ class UserSignupSerializer(serializers.ModelSerializer):
             password=validated_data['password']
         )
         return user
+    
+class OrderItemSerializer(serializers.ModelSerializer):
+    product_id = serializers.IntegerField(source='product.id') # Will populate this field with the product's id from the DB
+    product_name = serializers.CharField(source='product.product_name', read_only=True) # Will populate this field with the product's name 
+
+    class Meta:
+        model = OrderItem
+        fields = ['product_id', 'quantity', 'product_name']
+
+
+class OrderSerializer(serializers.ModelSerializer):
+    order_items = OrderItemSerializer(many=True)  
+    order_date = serializers.DateTimeField(read_only=True) # Set to readonly to return to the customer
+    status = serializers.CharField(read_only=True) # Set to readonly to return to the customer
+
+    class Meta:
+        model = Order
+        fields = ['payment_method', 'order_date', 'status', 'order_items']
+
+    def create(self, validated_data):
+        order_items_data = validated_data.pop('order_items') # Gets the order items from customer's order
+        order = Order.objects.create(**validated_data) # Creates a new order with the data 
+        
+        for order_item_data in order_items_data:
+            # Fetch the product instance using the product_id
+            product = Product.objects.get(id=order_item_data['product']['id'])
+            # Create the OrderItem with the actual product instance
+            OrderItem.objects.create(order=order, product=product, quantity=order_item_data['quantity']) # Create an Order Item
+        
+        return order
