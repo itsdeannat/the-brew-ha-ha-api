@@ -1,6 +1,7 @@
 from rest_framework import serializers
 from django.contrib.auth.models import User
 import re
+from django.db import transaction
 from .models import Product, Order, OrderItem
 
 class ProductSerializer(serializers.ModelSerializer):
@@ -95,6 +96,7 @@ class OrderItemSerializer(serializers.ModelSerializer):
 
 
 class OrderSerializer(serializers.ModelSerializer):
+    
     order_items = OrderItemSerializer(many=True)  
     order_date = serializers.DateTimeField(read_only=True) # Set to readonly to return to the customer
     status = serializers.CharField(read_only=True) # Set to readonly to return to the customer
@@ -102,15 +104,25 @@ class OrderSerializer(serializers.ModelSerializer):
     class Meta:
         model = Order
         fields = ['payment_method', 'order_date', 'status', 'order_items']
+        
+    
 
     def create(self, validated_data):
         order_items_data = validated_data.pop('order_items') # Gets the order items from customer's order
-        order = Order.objects.create(**validated_data) # Creates a new order with the data 
-        
-        for order_item_data in order_items_data:
-            # Fetch the product instance using the product_id
-            product = Product.objects.get(id=order_item_data['product']['id'])
-            # Create the OrderItem with the actual product instance
-            OrderItem.objects.create(order=order, product=product, quantity=order_item_data['quantity']) # Create an Order Item
+        with transaction.atomic():  
+            order = Order.objects.create(**validated_data) # Creates a new order with the data
+            
+            for order_item_data in order_items_data: # Fetch the product instance using the product_id
+                product = Product.objects.get(id=order_item_data['product']['id']) # Create the OrderItem with the actual product instance
+
+                if order_item_data['quantity'] > product.quantity:
+                    raise serializers.ValidationError(f"{product.product_name} is out of stock.")
+
+                # Create OrderItem
+                OrderItem.objects.create(order=order, product=product, quantity=order_item_data['quantity'])
+
+                # Update the product quantity 
+                product.quantity -= order_item_data['quantity']
+                product.save()
         
         return order
