@@ -14,21 +14,138 @@ from .serializers import ProductSerializer, UserSignupSerializer, OrderSerialize
 # Create your views here.
 
 class ProductViewSet(ReadOnlyModelViewSet):
+    
     authentication_classes = [JWTAuthentication]
     permission_classes = [IsAuthenticated]
     
     serializer_class = ProductSerializer
     queryset = Product.objects.all()
     
-    def list(self, request):
-        queryset = Product.objects.all()
-        serializer = ProductSerializer(queryset, many=True)
-        return Response(serializer.data)
-    
+    @extend_schema(
+        operation_id="retrieve_products",
+        description="Returns a list of all products in the database",
+        responses={
+            200: OpenApiTypes.OBJECT,
+            400: OpenApiTypes.OBJECT,
+            401: OpenApiTypes.OBJECT,
+            404: OpenApiTypes.OBJECT
+        },
+        examples=[
+            OpenApiExample(
+                name="Successful Response",
+                description="",
+                value={
+                    "results": [
+                        {
+                            "id": 1,                 
+                            "product_name": "mocha",           
+                            "temperature": "hot",
+                            "caffeine_amount": 105,
+                            "price": 3.75,
+                            "description": "A rich, decadent blend of espresso and chocolate",
+                            "quantity": 8
+                        },
+                        {
+                            "id": 2,                 
+                            "product_name": "muffin",
+                            "price": 2.50,
+                            "description": "A fluffy, warm blueberry muffin",
+                            "quantity": 5
+                        },
+                        {
+                            "id": 3,                 
+                            "product_name": "cortado",
+                            "temperature": "hot",
+                            "caffeine_amount": 130,
+                            "price": 4.0,
+                            "description": "Made with beans picked from the coast of Spain",
+                            "quantity": 5
+                        }
+                    ]
+                }
+            ),
+            OpenApiExample(
+                name="Bad Request",
+                description="",
+                value={"detail": "The request body could not be read properly."},
+                response_only=True,
+                status_codes=["400"],
+            ),
+            OpenApiExample(
+                name="Unauthorized",
+                description="",
+                value={"detail": "Authentication credentials were not provided."},
+                response_only=True,
+                status_codes=["401"],
+            ),
+            OpenApiExample(
+                name="Not Found",
+                description="",
+                value={"detail": "No product matches the given query."},
+                response_only=True,
+                status_codes=["404"],
+            ),
+        ]
+    )    
     def retrieve(self, request, pk=None):
         queryset = Product.objects.all()
         user = get_object_or_404(queryset, pk=pk)
         serializer = ProductSerializer(user)
+        return Response(serializer.data)
+    
+    @extend_schema(
+        operation_id="list_products",
+        description="Returns a single product from the database",
+        responses={
+            200: OpenApiTypes.OBJECT,
+            400: OpenApiTypes.OBJECT,
+            401: OpenApiTypes.OBJECT,
+            404: OpenApiTypes.OBJECT
+        },
+        examples=[
+            OpenApiExample(
+                name="Successful Response",
+                description="",
+                value={
+                    "results": [
+                        {
+                            "id": 1,                 
+                            "product_name": "mocha",           
+                            "temperature": "hot",
+                            "caffeine_amount": 105,
+                            "price": 3.75,
+                            "description": "A rich, decadent blend of espresso and chocolate",
+                            "quantity": 8
+                        },
+                    ]
+                }
+            ),
+            OpenApiExample(
+                name="Bad Request",
+                description="",
+                value={"detail": "The request body could not be read properly."},
+                response_only=True,
+                status_codes=["400"],
+            ),
+            OpenApiExample(
+                name="Unauthorized",
+                description="",
+                value={"detail": "Authentication credentials were not provided."},
+                response_only=True,
+                status_codes=["401"],
+            ),
+            OpenApiExample(
+                name="Not Found",
+                description="",
+                value={"detail": "No product matches the given query."},
+                response_only=True,
+                status_codes=["404"],
+            ),
+        ]
+    )  
+    def list(self, request):
+        queryset = Product.objects.all()
+        serializer = ProductSerializer(queryset, many=True)
         return Response(serializer.data)
 
 class UserSignupView(APIView):
@@ -53,6 +170,53 @@ class PingView(APIView):
         return Response(content, status=status.HTTP_200_OK)
     
 class CreateOrderView(APIView):
+    
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
+    
+    @extend_schema(
+        operation_id="create_order",
+        description="Order available products from the database",
+        responses={
+            200: OpenApiTypes.OBJECT,
+            400: OpenApiTypes.OBJECT,
+            401: OpenApiTypes.OBJECT,
+            404: OpenApiTypes.OBJECT
+        },
+        examples=[
+            OpenApiExample(
+                name="Successful Response",
+                description="",
+                value={
+                    "results": [
+                        {
+                            "payment_method": "Credit",
+                            "order_items": [
+                            {
+                                "product_id": 1,
+                                "quantity": 2
+                            }
+                            ]
+                        },
+                    ]
+                }
+            ),
+            OpenApiExample(
+                name="Bad Request",
+                description="",
+                value={"detail": "The request body could not be read properly."},
+                response_only=True,
+                status_codes=["400"],
+            ),
+            OpenApiExample(
+                name="Unauthorized",
+                description="",
+                value={"detail": "Authentication credentials were not provided."},
+                response_only=True,
+                status_codes=["401"],
+            ),
+        ]
+    )  
     def post(self, request, *args, **kwargs):
         serializer = OrderSerializer(data=request.data)
         if serializer.is_valid():
