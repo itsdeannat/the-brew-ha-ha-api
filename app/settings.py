@@ -149,16 +149,16 @@ SPECTACULAR_SETTINGS = {
     'SERVE_INCLUDE_SCHEMA': False,
     'TAGS': [
         {
-            'name': 'coffees',
-            'description': 'Represents coffees in the Brew Ha Ha inventory.'
-        },
-        {
-            'name': 'snacks',
-            'description': 'Represents snacks in the Brew Ha Ha inventory.'
-        },
-        {
-            'name': 'token',
+            'name': 'tokens',
             'description': 'Use these endpoints generate a JSON Web Token (JWT) to authenticate your credentials.'
+        },
+        {
+            'name': 'orders',
+            'description': 'Use this endpoint to submit a new order.'
+        },
+        {
+            'name': 'products',
+            'description': 'Use this endpoint to get a single product or a list of products from the database.'
         }
     ]
 }
