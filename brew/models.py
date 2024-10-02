@@ -1,4 +1,5 @@
 from django.db import models
+from django.utils import timezone
 
 # Create your models here.
 
@@ -20,3 +21,18 @@ class Product(models.Model):
     price = models.FloatField()
     description = models.CharField(max_length=200, default='Default Description')  
     quantity = models.IntegerField(default=True)
+    
+class Order(models.Model):
+    PAYMENT_METHODS = [ # Only choices customers can include in request
+        ('Credit', 'Credit'),
+        ('Debit', 'Debit'),
+    ]
+    
+    payment_method = models.CharField(max_length=20, choices=PAYMENT_METHODS)
+    order_date = models.DateTimeField(default=timezone.now)
+    status = models.CharField(max_length=20, default="in progress")
+
+class OrderItem(models.Model):
+    order = models.ForeignKey(Order, related_name='order_items', on_delete=models.CASCADE) # Links orders to order items
+    product = models.ForeignKey('Product', on_delete=models.CASCADE) # Links products to order items for matching
+    quantity = models.PositiveIntegerField()
