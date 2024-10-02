@@ -47,7 +47,7 @@ class JWTAuthenticationCalls(TestCase):
         response = self.client.post('/api/signup/', user_data, format='json')
         self.assertEqual(response.status_code, 201)
 
-        response = self.client.post('/api/token/', user_data, follow=True)
+        response = self.client.post('/api/tokens/', user_data, follow=True)
         self.assertEqual(response.status_code, 200)
         
     def test_not_authenticated_user(self):
@@ -58,7 +58,7 @@ class JWTAuthenticationCalls(TestCase):
             'username': 'johndoe',
             'password': 'password123'
         }
-        response = self.client.post('/api/token/', user_data, follow=True)
+        response = self.client.post('/api/tokens/', user_data, follow=True)
         self.assertEqual(response.status_code, 401)
         
 class GetAllResourcesCalls(TestCase):
@@ -76,7 +76,7 @@ class GetAllResourcesCalls(TestCase):
         self.assertEqual(response.status_code, 201)
 
         # User gets a JWT
-        response = self.client.post('/api/token/', user_data, follow=True)
+        response = self.client.post('/api/tokens/', user_data, follow=True)
         self.assertEqual(response.status_code, 200)
         
         #Get the JWT from response
@@ -127,7 +127,7 @@ class GetResourceById(TestCase):
         self.assertEqual(response.status_code, 201)
         
         # User gets a JWT
-        response = self.client.post('/api/token/', user_data, follow=True)
+        response = self.client.post('/api/tokens/', user_data, follow=True)
         self.assertEqual(response.status_code, 200)
         
         #Get the JWT from response
