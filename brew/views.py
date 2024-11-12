@@ -9,7 +9,7 @@ from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from .models import Product
-from .serializers import ProductSerializer, UserSignupSerializer, OrderSerializer
+from .serializers import ProductSerializer, UserSignupSerializer, OrderSerializer, BadRequestSerializer, UnauthorizedSerializer, NotFoundSerializer
 
 # Create your views here.
 
@@ -177,11 +177,12 @@ class CreateOrderView(APIView):
     @extend_schema(
         operation_id="create_order",
         description="Order available products from the database",
+        request=OrderSerializer,
         responses={
-            200: OpenApiTypes.OBJECT,
-            400: OpenApiTypes.OBJECT,
-            401: OpenApiTypes.OBJECT,
-            404: OpenApiTypes.OBJECT
+            200: OrderSerializer,
+            400: BadRequestSerializer,
+            401: UnauthorizedSerializer,
+            404: NotFoundSerializer
         },
         examples=[
             OpenApiExample(
@@ -199,7 +200,8 @@ class CreateOrderView(APIView):
                             ]
                         },
                     ]
-                }
+                },
+                status_codes=["201"]
             ),
             OpenApiExample(
                 name="Bad Request",
@@ -215,6 +217,13 @@ class CreateOrderView(APIView):
                 response_only=True,
                 status_codes=["401"],
             ),
+            OpenApiExample(
+                name="Not Found",
+                description="",
+                value={"detail": "The requested resource was not found"},
+                response_only=True,
+                status_codes=["404"]
+            )
         ]
     )  
     def post(self, request, *args, **kwargs):
