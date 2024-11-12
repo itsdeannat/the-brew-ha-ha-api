@@ -14,6 +14,27 @@ paths:
       description: Order available products from the database
       tags:
       - orders
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Order'
+            examples:
+              SuccessfulResponse:
+                value:
+                  results:
+                  - payment_method: Credit
+                    order_items:
+                    - product_id: 1
+                      quantity: 2
+                summary: Successful Response
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Order'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Order'
+        required: true
       security:
       - JWTAuth: []
       responses:
@@ -21,24 +42,13 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                additionalProperties: {}
-              examples:
-                SuccessfulResponse:
-                  value:
-                    results:
-                    - payment_method: Credit
-                      order_items:
-                      - product_id: 1
-                        quantity: 2
-                  summary: Successful Response
+                $ref: '#/components/schemas/Order'
           description: ''
         '400':
           content:
             application/json:
               schema:
-                type: object
-                additionalProperties: {}
+                $ref: '#/components/schemas/BadRequest'
               examples:
                 BadRequest:
                   value:
@@ -49,8 +59,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                additionalProperties: {}
+                $ref: '#/components/schemas/Unauthorized'
               examples:
                 Unauthorized:
                   value:
@@ -60,8 +69,12 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                additionalProperties: {}
+                $ref: '#/components/schemas/NotFound'
+              examples:
+                NotFound:
+                  value:
+                    detail: The requested resource was not found
+                  summary: Not Found
           description: ''
   /api/products/:
     get:
@@ -264,6 +277,60 @@ paths:
           description: ''
 components:
   schemas:
+    BadRequest:
+      type: object
+      properties:
+        detail:
+          type: string
+          default: The request body could not be read properly.
+    NotFound:
+      type: object
+      properties:
+        detail:
+          type: string
+          default: The requested resource was not found.
+    Order:
+      type: object
+      properties:
+        payment_method:
+          type: string
+          description: The payment method used
+        order_date:
+          type: string
+          format: date-time
+          readOnly: true
+          description: Order date
+        status:
+          type: string
+          readOnly: true
+          description: Order status
+        order_items:
+          type: array
+          items:
+            $ref: '#/components/schemas/OrderItem'
+          description: The items in the customer's order
+      required:
+      - order_date
+      - order_items
+      - payment_method
+      - status
+    OrderItem:
+      type: object
+      properties:
+        product_id:
+          type: integer
+        quantity:
+          type: integer
+          maximum: 9223372036854775807
+          minimum: 0
+          format: int64
+        product_name:
+          type: string
+          readOnly: true
+      required:
+      - product_id
+      - product_name
+      - quantity
     TokenObtainPair:
       type: object
       properties:
@@ -296,6 +363,12 @@ components:
       required:
       - access
       - refresh
+    Unauthorized:
+      type: object
+      properties:
+        detail:
+          type: string
+          default: Authentication credentials were not provided.
   securitySchemes:
     JWTAuth:
       type: http
