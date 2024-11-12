@@ -129,3 +129,11 @@ class OrderSerializer(serializers.ModelSerializer):
         
         return order
     
+class BadRequestSerializer(serializers.Serializer):
+    detail = serializers.CharField(default="The request body could not be read properly.")
+
+class UnauthorizedSerializer(serializers.Serializer):
+    detail = serializers.CharField(default="Authentication credentials were not provided.")
+
+class NotFoundSerializer(serializers.Serializer):
+    detail = serializers.CharField(default="The requested resource was not found.")    
