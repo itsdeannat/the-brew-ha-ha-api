@@ -43,6 +43,15 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Order'
+              examples:
+                SuccessfulResponse:
+                  value:
+                    results:
+                    - payment_method: Credit
+                      order_items:
+                      - product_id: 1
+                        quantity: 2
+                  summary: Successful Response
           description: ''
         '400':
           content:
@@ -89,12 +98,13 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                additionalProperties: {}
+                type: array
+                items:
+                  $ref: '#/components/schemas/Product'
               examples:
                 SuccessfulResponse:
                   value:
-                    results:
+                  - results:
                     - id: 1
                       product_name: mocha
                       temperature: hot
@@ -108,8 +118,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                additionalProperties: {}
+                $ref: '#/components/schemas/BadRequest'
               examples:
                 BadRequest:
                   value:
@@ -120,8 +129,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                additionalProperties: {}
+                $ref: '#/components/schemas/Unauthorized'
               examples:
                 Unauthorized:
                   value:
@@ -131,8 +139,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                additionalProperties: {}
+                $ref: '#/components/schemas/NotFound'
               examples:
                 NotFound:
                   value:
@@ -159,8 +166,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                additionalProperties: {}
+                $ref: '#/components/schemas/Product'
               examples:
                 SuccessfulResponse:
                   value:
@@ -190,8 +196,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                additionalProperties: {}
+                $ref: '#/components/schemas/BadRequest'
               examples:
                 BadRequest:
                   value:
@@ -202,8 +207,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                additionalProperties: {}
+                $ref: '#/components/schemas/Unauthorized'
               examples:
                 Unauthorized:
                   value:
@@ -213,8 +217,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                additionalProperties: {}
+                $ref: '#/components/schemas/NotFound'
               examples:
                 NotFound:
                   value:
@@ -329,6 +332,50 @@ components:
           readOnly: true
       required:
       - product_id
+      - product_name
+      - quantity
+    Product:
+      type: object
+      description: |-
+        Serializer for the product model.
+
+        Converts Product model instances into JSON format.
+
+        Fields:
+            id (int): A unique integer value identifying this product.
+            product_name (str): The name of the product, e.g. 'Muffin', 'Espresso'
+            temperature (str): The serving temperature for coffees, e.g. 'Hot', 'Iced'
+            caffeine_amount (int): The amount of caffeine in milligrams.
+            price (float): The price of the product in USD.
+            description (str): A short description of the product.
+            quantity (int): Amount of product available
+      properties:
+        id:
+          type: integer
+          description: A unique integer value identifying this product.
+        product_name:
+          type: string
+          description: The product name
+        temperature:
+          type: string
+          description: The temperature of the coffee
+        caffeine_amount:
+          type: integer
+          description: The amount of caffeine in the coffee
+        price:
+          type: number
+          format: double
+          description: The price of the product in USD
+        description:
+          type: string
+          description: A description of the product
+        quantity:
+          type: integer
+          description: Amount of product available
+      required:
+      - description
+      - id
+      - price
       - product_name
       - quantity
     TokenObtainPair:
