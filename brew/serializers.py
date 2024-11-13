@@ -4,6 +4,7 @@ import re
 from django.db import transaction
 from .models import Product, Order, OrderItem
 
+
 class ProductSerializer(serializers.ModelSerializer):
     """
     Serializer for the product model. 
@@ -21,8 +22,8 @@ class ProductSerializer(serializers.ModelSerializer):
     """
     id = serializers.IntegerField(help_text='A unique integer value identifying this product.')
     product_name = serializers.CharField(help_text='The product name')
-    temperature = serializers.CharField(help_text='The temperature of the coffee', required=False)
-    caffeine_amount = serializers.IntegerField(help_text='The amount of caffeine in the coffee', required=False)
+    temperature = serializers.CharField(help_text='Drink temperature', required=False)
+    caffeine_amount = serializers.IntegerField(help_text="Caffeine amount", required=False)
     price = serializers.FloatField(help_text='The price of the product in USD')
     description = serializers.CharField(help_text='A description of the product')
     quantity = serializers.IntegerField(help_text='Amount of product available')
@@ -97,9 +98,10 @@ class OrderItemSerializer(serializers.ModelSerializer):
 
 class OrderSerializer(serializers.ModelSerializer):
     
-    order_items = OrderItemSerializer(many=True)  
-    order_date = serializers.DateTimeField(read_only=True) # Set to readonly to return to the customer
-    status = serializers.CharField(read_only=True) # Set to readonly to return to the customer
+    order_items = OrderItemSerializer(many=True, required=True, help_text="The items in the customer's order. Provide the `product_id` and quantity for each product.")  
+    order_date = serializers.DateTimeField(read_only=True, help_text="Order date") # Set to readonly to return to the customer
+    status = serializers.CharField(read_only=True, help_text="Order status") # Set to readonly to return to the customer
+    payment_method = serializers.CharField(required=True, help_text="The payment method used")
 
     class Meta:
         model = Order
@@ -126,3 +128,12 @@ class OrderSerializer(serializers.ModelSerializer):
                 product.save()
         
         return order
+    
+class BadRequestSerializer(serializers.Serializer):
+    detail = serializers.CharField(default="The request body could not be read properly.")
+
+class UnauthorizedSerializer(serializers.Serializer):
+    detail = serializers.CharField(default="Authentication credentials were not provided.")
+
+class NotFoundSerializer(serializers.Serializer):
+    detail = serializers.CharField(default="The requested resource was not found.")    

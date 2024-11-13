@@ -14,6 +14,26 @@ paths:
       description: Order available products from the database
       tags:
       - orders
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Order'
+            examples:
+              SuccessfulResponse:
+                value:
+                - payment_method: Credit
+                  order_items:
+                  - product_id: 1
+                    quantity: 2
+                summary: Successful Response
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Order'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Order'
+        required: true
       security:
       - JWTAuth: []
       responses:
@@ -21,24 +41,21 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                additionalProperties: {}
+                $ref: '#/components/schemas/Order'
               examples:
                 SuccessfulResponse:
                   value:
-                    results:
-                    - payment_method: Credit
-                      order_items:
-                      - product_id: 1
-                        quantity: 2
+                  - payment_method: Credit
+                    order_items:
+                    - product_id: 1
+                      quantity: 2
                   summary: Successful Response
           description: ''
         '400':
           content:
             application/json:
               schema:
-                type: object
-                additionalProperties: {}
+                $ref: '#/components/schemas/BadRequest'
               examples:
                 BadRequest:
                   value:
@@ -49,8 +66,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                additionalProperties: {}
+                $ref: '#/components/schemas/Unauthorized'
               examples:
                 Unauthorized:
                   value:
@@ -60,83 +76,17 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                additionalProperties: {}
+                $ref: '#/components/schemas/NotFound'
+              examples:
+                NotFound:
+                  value:
+                    detail: The requested resource was not found
+                  summary: Not Found
           description: ''
   /api/products/:
     get:
       operationId: list_products
-      description: Returns a single product from the database
-      tags:
-      - products
-      security:
-      - JWTAuth: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                type: object
-                additionalProperties: {}
-              examples:
-                SuccessfulResponse:
-                  value:
-                    results:
-                    - id: 1
-                      product_name: mocha
-                      temperature: hot
-                      caffeine_amount: 105
-                      price: 3.75
-                      description: A rich, decadent blend of espresso and chocolate
-                      quantity: 8
-                  summary: Successful Response
-          description: ''
-        '400':
-          content:
-            application/json:
-              schema:
-                type: object
-                additionalProperties: {}
-              examples:
-                BadRequest:
-                  value:
-                    detail: The request body could not be read properly.
-                  summary: Bad Request
-          description: ''
-        '401':
-          content:
-            application/json:
-              schema:
-                type: object
-                additionalProperties: {}
-              examples:
-                Unauthorized:
-                  value:
-                    detail: Authentication credentials were not provided.
-          description: ''
-        '404':
-          content:
-            application/json:
-              schema:
-                type: object
-                additionalProperties: {}
-              examples:
-                NotFound:
-                  value:
-                    detail: No product matches the given query.
-                  summary: Not Found
-          description: ''
-  /api/products/{id}/:
-    get:
-      operationId: retrieve_products
       description: Returns a list of all products in the database
-      parameters:
-      - in: path
-        name: id
-        schema:
-          type: integer
-        description: A unique integer value identifying this product.
-        required: true
       tags:
       - products
       security:
@@ -146,13 +96,13 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                additionalProperties: {}
+                type: array
+                items:
+                  $ref: '#/components/schemas/Product'
               examples:
                 SuccessfulResponse:
                   value:
-                    results:
-                    - id: 1
+                  - - id: 1
                       product_name: mocha
                       temperature: hot
                       caffeine_amount: 105
@@ -177,8 +127,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                additionalProperties: {}
+                $ref: '#/components/schemas/BadRequest'
               examples:
                 BadRequest:
                   value:
@@ -189,8 +138,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                additionalProperties: {}
+                $ref: '#/components/schemas/Unauthorized'
               examples:
                 Unauthorized:
                   value:
@@ -200,8 +148,72 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                additionalProperties: {}
+                $ref: '#/components/schemas/NotFound'
+              examples:
+                NotFound:
+                  value:
+                    detail: No product matches the given query.
+                  summary: Not Found
+          description: ''
+  /api/products/{id}/:
+    get:
+      operationId: retrieve_products
+      description: Returns a single product from the database
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this product.
+        required: true
+      tags:
+      - products
+      security:
+      - JWTAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Product'
+              examples:
+                SuccessfulResponse:
+                  value:
+                  - id: 1
+                    product_name: mocha
+                    temperature: hot
+                    caffeine_amount: 105
+                    price: 3.75
+                    description: A rich, decadent blend of espresso and chocolate
+                    quantity: 8
+                  summary: Successful Response
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequest'
+              examples:
+                BadRequest:
+                  value:
+                    detail: The request body could not be read properly.
+                  summary: Bad Request
+          description: ''
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Unauthorized'
+              examples:
+                Unauthorized:
+                  value:
+                    detail: Authentication credentials were not provided.
+          description: ''
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFound'
               examples:
                 NotFound:
                   value:
@@ -264,6 +276,105 @@ paths:
           description: ''
 components:
   schemas:
+    BadRequest:
+      type: object
+      properties:
+        detail:
+          type: string
+          default: The request body could not be read properly.
+    NotFound:
+      type: object
+      properties:
+        detail:
+          type: string
+          default: The requested resource was not found.
+    Order:
+      type: object
+      properties:
+        payment_method:
+          type: string
+          description: The payment method used
+        order_date:
+          type: string
+          format: date-time
+          readOnly: true
+          description: Order date
+        status:
+          type: string
+          readOnly: true
+          description: Order status
+        order_items:
+          type: array
+          items:
+            $ref: '#/components/schemas/OrderItem'
+          description: The items in the customer's order. Provide the `product_id`
+            and quantity for each product.
+      required:
+      - order_date
+      - order_items
+      - payment_method
+      - status
+    OrderItem:
+      type: object
+      properties:
+        product_id:
+          type: integer
+        quantity:
+          type: integer
+          maximum: 9223372036854775807
+          minimum: 0
+          format: int64
+        product_name:
+          type: string
+          readOnly: true
+      required:
+      - product_id
+      - product_name
+      - quantity
+    Product:
+      type: object
+      description: |-
+        Serializer for the product model.
+
+        Converts Product model instances into JSON format.
+
+        Fields:
+            id (int): A unique integer value identifying this product.
+            product_name (str): The name of the product, e.g. 'Muffin', 'Espresso'
+            temperature (str): The serving temperature for coffees, e.g. 'Hot', 'Iced'
+            caffeine_amount (int): The amount of caffeine in milligrams.
+            price (float): The price of the product in USD.
+            description (str): A short description of the product.
+            quantity (int): Amount of product available
+      properties:
+        id:
+          type: integer
+          description: A unique integer value identifying this product.
+        product_name:
+          type: string
+          description: The product name
+        temperature:
+          type: string
+          description: Drink temperature
+        caffeine_amount:
+          type: integer
+          description: Caffeine amount
+        price:
+          type: number
+          format: double
+          description: The price of the product in USD
+        description:
+          type: string
+          description: A description of the product
+        quantity:
+          type: integer
+          description: Amount of product available
+      required:
+      - description
+      - id
+      - price
+      - product_name
+      - quantity
     TokenObtainPair:
       type: object
       properties:
@@ -296,6 +407,12 @@ components:
       required:
       - access
       - refresh
+    Unauthorized:
+      type: object
+      properties:
+        detail:
+          type: string
+          default: Authentication credentials were not provided.
   securitySchemes:
     JWTAuth:
       type: http
