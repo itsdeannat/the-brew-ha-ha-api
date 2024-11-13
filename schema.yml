@@ -358,7 +358,7 @@ components:
           description: Drink temperature
         caffeine_amount:
           type: integer
-          description: Caffeine amount
+          description: Caffeine amount in milligrams
         price:
           type: number
           format: double
