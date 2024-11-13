@@ -24,7 +24,7 @@ class ProductViewSet(ReadOnlyModelViewSet):
     
     @extend_schema(
         operation_id="retrieve_products",
-        description="Returns a list of all products in the database",
+        description="Returns a single product from the database",
         responses={
             200: ProductSerializer,
             400: BadRequestSerializer,
@@ -35,35 +35,17 @@ class ProductViewSet(ReadOnlyModelViewSet):
             OpenApiExample(
                 name="Successful Response",
                 description="",
-                value={
-                    "results": [
-                        {
-                            "id": 1,                 
-                            "product_name": "mocha",           
-                            "temperature": "hot",
-                            "caffeine_amount": 105,
-                            "price": 3.75,
-                            "description": "A rich, decadent blend of espresso and chocolate",
-                            "quantity": 8
-                        },
-                        {
-                            "id": 2,                 
-                            "product_name": "muffin",
-                            "price": 2.50,
-                            "description": "A fluffy, warm blueberry muffin",
-                            "quantity": 5
-                        },
-                        {
-                            "id": 3,                 
-                            "product_name": "cortado",
-                            "temperature": "hot",
-                            "caffeine_amount": 130,
-                            "price": 4.0,
-                            "description": "Made with beans picked from the coast of Spain",
-                            "quantity": 5
-                        }
-                    ]
-                },
+                value=[
+                    {
+                        "id": 1,                 
+                        "product_name": "mocha",           
+                        "temperature": "hot",
+                        "caffeine_amount": 105,
+                        "price": 3.75,
+                        "description": "A rich, decadent blend of espresso and chocolate",
+                        "quantity": 8
+                    },
+                ],
                 status_codes=["200"]
             ),
             OpenApiExample(
@@ -97,7 +79,7 @@ class ProductViewSet(ReadOnlyModelViewSet):
     
     @extend_schema(
         operation_id="list_products",
-        description="Returns a single product from the database",
+        description="Returns a list of all products in the database",
         responses={
             200: ProductSerializer,
             400: BadRequestSerializer,
@@ -108,8 +90,7 @@ class ProductViewSet(ReadOnlyModelViewSet):
             OpenApiExample(
                 name="Successful Response",
                 description="",
-                value={
-                    "results": [
+                value=[
                         {
                             "id": 1,                 
                             "product_name": "mocha",           
@@ -119,8 +100,23 @@ class ProductViewSet(ReadOnlyModelViewSet):
                             "description": "A rich, decadent blend of espresso and chocolate",
                             "quantity": 8
                         },
-                    ]
-                },
+                        {
+                            "id": 2,                 
+                            "product_name": "muffin",
+                            "price": 2.50,
+                            "description": "A fluffy, warm blueberry muffin",
+                            "quantity": 5
+                        },
+                        {
+                            "id": 3,                 
+                            "product_name": "cortado",
+                            "temperature": "hot",
+                            "caffeine_amount": 130,
+                            "price": 4.0,
+                            "description": "Made with beans picked from the coast of Spain",
+                            "quantity": 5
+                        }
+                    ],
                 status_codes=["200"]
             ),
             OpenApiExample(
@@ -191,19 +187,17 @@ class CreateOrderView(APIView):
             OpenApiExample(
                 name="Successful Response",
                 description="",
-                value={
-                    "results": [
-                        {
-                            "payment_method": "Credit",
-                            "order_items": [
+                value=[
+                    {
+                        "payment_method": "Credit",
+                        "order_items": [
                             {
                                 "product_id": 1,
                                 "quantity": 2
                             }
-                            ]
-                        },
-                    ]
-                },
+                        ]
+                    },
+                ],
                 status_codes=["200"]
             ),
             OpenApiExample(
