@@ -18,6 +18,7 @@ class ProductViewSet(ReadOnlyModelViewSet):
     authentication_classes = [JWTAuthentication]
     permission_classes = [IsAuthenticated]
     
+    pagination_class = None 
     serializer_class = ProductSerializer
     queryset = Product.objects.all()
     
@@ -25,10 +26,10 @@ class ProductViewSet(ReadOnlyModelViewSet):
         operation_id="retrieve_products",
         description="Returns a list of all products in the database",
         responses={
-            200: OpenApiTypes.OBJECT,
-            400: OpenApiTypes.OBJECT,
-            401: OpenApiTypes.OBJECT,
-            404: OpenApiTypes.OBJECT
+            200: ProductSerializer,
+            400: BadRequestSerializer,
+            401: UnauthorizedSerializer,
+            404: NotFoundSerializer
         },
         examples=[
             OpenApiExample(
@@ -62,7 +63,8 @@ class ProductViewSet(ReadOnlyModelViewSet):
                             "quantity": 5
                         }
                     ]
-                }
+                },
+                status_codes=["200"]
             ),
             OpenApiExample(
                 name="Bad Request",
@@ -97,10 +99,10 @@ class ProductViewSet(ReadOnlyModelViewSet):
         operation_id="list_products",
         description="Returns a single product from the database",
         responses={
-            200: OpenApiTypes.OBJECT,
-            400: OpenApiTypes.OBJECT,
-            401: OpenApiTypes.OBJECT,
-            404: OpenApiTypes.OBJECT
+            200: ProductSerializer,
+            400: BadRequestSerializer,
+            401: UnauthorizedSerializer,
+            404: NotFoundSerializer
         },
         examples=[
             OpenApiExample(
@@ -118,7 +120,8 @@ class ProductViewSet(ReadOnlyModelViewSet):
                             "quantity": 8
                         },
                     ]
-                }
+                },
+                status_codes=["200"]
             ),
             OpenApiExample(
                 name="Bad Request",
@@ -201,7 +204,7 @@ class CreateOrderView(APIView):
                         },
                     ]
                 },
-                status_codes=["201"]
+                status_codes=["200"]
             ),
             OpenApiExample(
                 name="Bad Request",
