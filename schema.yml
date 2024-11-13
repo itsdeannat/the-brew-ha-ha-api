@@ -22,11 +22,10 @@ paths:
             examples:
               SuccessfulResponse:
                 value:
-                  results:
-                  - payment_method: Credit
-                    order_items:
-                    - product_id: 1
-                      quantity: 2
+                - payment_method: Credit
+                  order_items:
+                  - product_id: 1
+                    quantity: 2
                 summary: Successful Response
           application/x-www-form-urlencoded:
             schema:
@@ -46,11 +45,10 @@ paths:
               examples:
                 SuccessfulResponse:
                   value:
-                    results:
-                    - payment_method: Credit
-                      order_items:
-                      - product_id: 1
-                        quantity: 2
+                  - payment_method: Credit
+                    order_items:
+                    - product_id: 1
+                      quantity: 2
                   summary: Successful Response
           description: ''
         '400':
@@ -88,7 +86,7 @@ paths:
   /api/products/:
     get:
       operationId: list_products
-      description: Returns a single product from the database
+      description: Returns a list of all products in the database
       tags:
       - products
       security:
@@ -104,14 +102,25 @@ paths:
               examples:
                 SuccessfulResponse:
                   value:
-                  - results:
-                    - id: 1
+                  - - id: 1
                       product_name: mocha
                       temperature: hot
                       caffeine_amount: 105
                       price: 3.75
                       description: A rich, decadent blend of espresso and chocolate
                       quantity: 8
+                    - id: 2
+                      product_name: muffin
+                      price: 2.5
+                      description: A fluffy, warm blueberry muffin
+                      quantity: 5
+                    - id: 3
+                      product_name: cortado
+                      temperature: hot
+                      caffeine_amount: 130
+                      price: 4.0
+                      description: Made with beans picked from the coast of Spain
+                      quantity: 5
                   summary: Successful Response
           description: ''
         '400':
@@ -149,7 +158,7 @@ paths:
   /api/products/{id}/:
     get:
       operationId: retrieve_products
-      description: Returns a list of all products in the database
+      description: Returns a single product from the database
       parameters:
       - in: path
         name: id
@@ -170,26 +179,13 @@ paths:
               examples:
                 SuccessfulResponse:
                   value:
-                    results:
-                    - id: 1
-                      product_name: mocha
-                      temperature: hot
-                      caffeine_amount: 105
-                      price: 3.75
-                      description: A rich, decadent blend of espresso and chocolate
-                      quantity: 8
-                    - id: 2
-                      product_name: muffin
-                      price: 2.5
-                      description: A fluffy, warm blueberry muffin
-                      quantity: 5
-                    - id: 3
-                      product_name: cortado
-                      temperature: hot
-                      caffeine_amount: 130
-                      price: 4.0
-                      description: Made with beans picked from the coast of Spain
-                      quantity: 5
+                  - id: 1
+                    product_name: mocha
+                    temperature: hot
+                    caffeine_amount: 105
+                    price: 3.75
+                    description: A rich, decadent blend of espresso and chocolate
+                    quantity: 8
                   summary: Successful Response
           description: ''
         '400':
@@ -311,7 +307,8 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/OrderItem'
-          description: The items in the customer's order
+          description: The items in the customer's order. Provide the `product_id`
+            and quantity for each product.
       required:
       - order_date
       - order_items
@@ -358,10 +355,10 @@ components:
           description: The product name
         temperature:
           type: string
-          description: The temperature of the coffee
+          description: Drink temperature
         caffeine_amount:
           type: integer
-          description: The amount of caffeine in the coffee
+          description: Caffeine amount
         price:
           type: number
           format: double
