@@ -23,7 +23,7 @@ class ProductSerializer(serializers.ModelSerializer):
     id = serializers.IntegerField(help_text='A unique integer value identifying this product.')
     product_name = serializers.CharField(help_text='The product name')
     temperature = serializers.CharField(help_text='Drink temperature', required=False)
-    caffeine_amount = serializers.IntegerField(help_text="Caffeine amount", required=False)
+    caffeine_amount = serializers.IntegerField(help_text="Caffeine amount in milligrams", required=False)
     price = serializers.FloatField(help_text='The price of the product in USD')
     description = serializers.CharField(help_text='A description of the product')
     quantity = serializers.IntegerField(help_text='Amount of product available')
