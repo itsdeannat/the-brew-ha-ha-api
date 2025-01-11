@@ -10,4 +10,4 @@ class ProductAdmin(admin.ModelAdmin):
 
 @admin.register(Order)
 class OrderAdmin(admin.ModelAdmin):
-    list_display = ('payment_method', 'order_date', 'status')
+    list_display = ('payment_method', 'order_date', 'status', 'id')
