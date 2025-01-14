@@ -7,15 +7,11 @@ from .views import OrderViewSet
 
 router = DefaultRouter()
 router.register(r'products', ProductViewSet, basename='product')
+router.register(r'orders', OrderViewSet, basename='order')
 
 
 urlpatterns = [
     path('api/signup/', UserSignupView.as_view(), name='signup'),
     path('api/ping/', PingView.as_view(), name='ping'),
-    path('api/orders/', OrderViewSet.as_view({
-        'get': 'retrieve',
-        'post': 'create'
-        }),
-        name='create_order'),
     path('api/', include(router.urls)) 
 ]
