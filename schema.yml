@@ -22,10 +22,14 @@ paths:
             examples:
               SuccessfulResponse:
                 value:
-                - payment_method: Credit
+                - id: '13'
+                  payment_method: Credit
+                  order_date: '2025-01-11T03:17:47.746025Z'
+                  status: in progress
                   order_items:
-                  - product_id: 1
-                    quantity: 2
+                  - product_id: 2
+                    quantity: 1
+                    product_name: blueberry muffin
                 summary: Successful Response
           application/x-www-form-urlencoded:
             schema:
@@ -45,10 +49,14 @@ paths:
               examples:
                 SuccessfulResponse:
                   value:
-                  - payment_method: Credit
+                  - id: '13'
+                    payment_method: Credit
+                    order_date: '2025-01-11T03:17:47.746025Z'
+                    status: in progress
                     order_items:
-                    - product_id: 1
-                      quantity: 2
+                    - product_id: 2
+                      quantity: 1
+                      product_name: blueberry muffin
                   summary: Successful Response
           description: ''
         '400':
@@ -81,6 +89,72 @@ paths:
                 NotFound:
                   value:
                     detail: The requested resource was not found
+                  summary: Not Found
+          description: ''
+  /api/orders/{id}/:
+    get:
+      operationId: retrieve_orders
+      description: Returns a single order from the database
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this order.
+        required: true
+      tags:
+      - orders
+      security:
+      - JWTAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Order'
+              examples:
+                SuccessfulResponse:
+                  value:
+                  - id: '13'
+                    payment_method: Credit
+                    order_date: '2025-01-11T03:17:47.746025Z'
+                    status: in progress
+                    order_items:
+                    - product_id: 2
+                      quantity: 1
+                      product_name: blueberry muffin
+                  summary: Successful Response
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequest'
+              examples:
+                BadRequest:
+                  value:
+                    detail: The request body could not be read properly.
+                  summary: Bad Request
+          description: ''
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Unauthorized'
+              examples:
+                Unauthorized:
+                  value:
+                    detail: Authentication credentials were not provided.
+          description: ''
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFound'
+              examples:
+                NotFound:
+                  value:
+                    detail: No product matches the given query.
                   summary: Not Found
           description: ''
   /api/products/:
@@ -291,6 +365,10 @@ components:
     Order:
       type: object
       properties:
+        id:
+          type: integer
+          readOnly: true
+          description: The unique order id
         payment_method:
           type: string
           description: The payment method used
@@ -310,6 +388,7 @@ components:
           description: The items in the customer's order. Provide the `product_id`
             and quantity for each product.
       required:
+      - id
       - order_date
       - order_items
       - payment_method

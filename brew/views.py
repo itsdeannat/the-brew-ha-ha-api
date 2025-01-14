@@ -1,14 +1,15 @@
 from django.shortcuts import get_object_or_404
 from rest_framework.views import APIView
 from rest_framework import viewsets
-from rest_framework.viewsets import ReadOnlyModelViewSet
-from drf_spectacular.utils import extend_schema, OpenApiExample, OpenApiResponse
+from rest_framework.viewsets import ReadOnlyModelViewSet, GenericViewSet
+from rest_framework.mixins import CreateModelMixin, RetrieveModelMixin
+from drf_spectacular.utils import extend_schema, OpenApiExample
 from drf_spectacular.types import OpenApiTypes
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework_simplejwt.authentication import JWTAuthentication
-from .models import Product
+from .models import Product, Order
 from .serializers import ProductSerializer, UserSignupSerializer, OrderSerializer, BadRequestSerializer, UnauthorizedSerializer, NotFoundSerializer
 
 # Create your views here.
@@ -168,10 +169,73 @@ class PingView(APIView):
         }
         return Response(content, status=status.HTTP_200_OK)
     
-class CreateOrderView(APIView):
+class OrderViewSet(CreateModelMixin, RetrieveModelMixin, GenericViewSet):
     
     authentication_classes = [JWTAuthentication]
     permission_classes = [IsAuthenticated]
+    
+    pagination_class = None
+    serializer_class = OrderSerializer
+    queryset = Order.objects.all()
+    
+    @extend_schema(
+        operation_id="retrieve_orders",
+        description="Returns a single order from the database",
+        responses={
+            200: OrderSerializer,
+            400: BadRequestSerializer,
+            401: UnauthorizedSerializer,
+            404: NotFoundSerializer
+        },
+        examples=[
+            OpenApiExample(
+                name="Successful Response",
+                description="",
+                value=[
+                    {
+                        "id": "13",
+                        "payment_method": "Credit",
+                        "order_date": "2025-01-11T03:17:47.746025Z",
+                        "status": "in progress",
+                        "order_items": [
+                            {
+                                "product_id": 2,
+                                "quantity": 1,
+                                "product_name": "blueberry muffin"
+                            }
+                        ]
+                    },
+                ],
+                status_codes=["200"]
+            ),
+            OpenApiExample(
+                name="Bad Request",
+                description="",
+                value={"detail": "The request body could not be read properly."},
+                response_only=True,
+                status_codes=["400"],
+            ),
+            OpenApiExample(
+                name="Unauthorized",
+                description="",
+                value={"detail": "Authentication credentials were not provided."},
+                response_only=True,
+                status_codes=["401"],
+            ),
+            OpenApiExample(
+                name="Not Found",
+                description="",
+                value={"detail": "No product matches the given query."},
+                response_only=True,
+                status_codes=["404"],
+            ),
+        ]
+    )
+    def retrieve(self, request, pk=None):
+        queryset = Order.objects.all()
+        user = get_object_or_404(queryset, pk=pk)
+        serializer = OrderSerializer(user)
+        return Response(serializer.data)  
     
     @extend_schema(
         operation_id="create_order",
@@ -189,11 +253,15 @@ class CreateOrderView(APIView):
                 description="",
                 value=[
                     {
+                        "id": "13",
                         "payment_method": "Credit",
+                        "order_date": "2025-01-11T03:17:47.746025Z",
+                        "status": "in progress",
                         "order_items": [
                             {
-                                "product_id": 1,
-                                "quantity": 2
+                                "product_id": 2,
+                                "quantity": 1,
+                                "product_name": "blueberry muffin"
                             }
                         ]
                     },
@@ -223,11 +291,12 @@ class CreateOrderView(APIView):
             )
         ]
     )  
-    def post(self, request, *args, **kwargs):
+    def create(self, request, *args, **kwargs):
         serializer = OrderSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
     
     

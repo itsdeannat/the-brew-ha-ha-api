@@ -98,11 +98,11 @@ class OrderItemSerializer(serializers.ModelSerializer):
 
 class OrderSerializer(serializers.ModelSerializer):
     
+    id = serializers.IntegerField(read_only=True, help_text="The unique order id")
     order_items = OrderItemSerializer(many=True, required=True, help_text="The items in the customer's order. Provide the `product_id` and quantity for each product.")  
     order_date = serializers.DateTimeField(read_only=True, help_text="Order date") # Set to readonly to return to the customer
     status = serializers.CharField(read_only=True, help_text="Order status") # Set to readonly to return to the customer
     payment_method = serializers.CharField(required=True, help_text="The payment method used")
-    id = serializers.CharField(read_only=True, help_text="The unique order id")
     
 
     class Meta:
