@@ -1,8 +1,9 @@
 from django.shortcuts import get_object_or_404
 from rest_framework.views import APIView
 from rest_framework import viewsets
-from rest_framework.viewsets import ReadOnlyModelViewSet, ModelViewSet
-from drf_spectacular.utils import extend_schema, OpenApiExample, OpenApiResponse
+from rest_framework.viewsets import ReadOnlyModelViewSet, GenericViewSet
+from rest_framework.mixins import CreateModelMixin, RetrieveModelMixin
+from drf_spectacular.utils import extend_schema, OpenApiExample
 from drf_spectacular.types import OpenApiTypes
 from rest_framework.response import Response
 from rest_framework import status
@@ -168,7 +169,7 @@ class PingView(APIView):
         }
         return Response(content, status=status.HTTP_200_OK)
     
-class OrderViewSet(ModelViewSet):
+class OrderViewSet(CreateModelMixin, RetrieveModelMixin, GenericViewSet):
     
     authentication_classes = [JWTAuthentication]
     permission_classes = [IsAuthenticated]
@@ -296,5 +297,6 @@ class OrderViewSet(ModelViewSet):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
     
     
