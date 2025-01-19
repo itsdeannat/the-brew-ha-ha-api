@@ -314,7 +314,7 @@ class OrderViewSet(CreateModelMixin, RetrieveModelMixin, GenericViewSet):
     )  
     def create(self, request, *args, **kwargs):
         """
-        Handles POST requests to create an order in the database
+        Handles POST requests to create an order in the Brew Ha Ha database
         """
         serializer = OrderSerializer(data=request.data)
         if serializer.is_valid():
