@@ -15,6 +15,9 @@ from .serializers import ProductSerializer, UserSignupSerializer, OrderSerialize
 # Create your views here.
 
 class ProductViewSet(ReadOnlyModelViewSet):
+    """ 
+    View to get products from the Brew Ha Ha database
+    """
     
     authentication_classes = [JWTAuthentication]
     permission_classes = [IsAuthenticated]
@@ -73,6 +76,9 @@ class ProductViewSet(ReadOnlyModelViewSet):
         ]
     )    
     def retrieve(self, request, pk=None):
+        """ 
+        Handles GET requests to get a specific product
+        """
         queryset = Product.objects.all()
         user = get_object_or_404(queryset, pk=pk)
         serializer = ProductSerializer(user)
@@ -144,6 +150,9 @@ class ProductViewSet(ReadOnlyModelViewSet):
         ]
     )  
     def list(self, request):
+        """
+        Handles GET requests to get all products in the database
+        """
         queryset = Product.objects.all()
         serializer = ProductSerializer(queryset, many=True)
         return Response(serializer.data)
@@ -152,6 +161,9 @@ class UserSignupView(APIView):
 
     @extend_schema(exclude=True)
     def post(self, request):
+        """
+        Handles POST requests to create a new user in the database
+        """
         serializer = UserSignupSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
@@ -164,12 +176,18 @@ class PingView(APIView):
     
     @extend_schema(exclude=True)
     def get(self, request, format=None):
+        """ 
+        Handles GET requests to send a test ping to the server
+        """
         content = {
             "message": "Test ping successful!"
         }
         return Response(content, status=status.HTTP_200_OK)
     
 class OrderViewSet(CreateModelMixin, RetrieveModelMixin, GenericViewSet):
+    """
+    View to create and get orders from the Brew Ha Ha database
+    """
     
     authentication_classes = [JWTAuthentication]
     permission_classes = [IsAuthenticated]
@@ -231,6 +249,9 @@ class OrderViewSet(CreateModelMixin, RetrieveModelMixin, GenericViewSet):
         ]
     )
     def retrieve(self, request, pk=None):
+        """
+        Handles GET requests to get a specific order from the database
+        """
         queryset = Order.objects.all()
         user = get_object_or_404(queryset, pk=pk)
         serializer = OrderSerializer(user)
@@ -304,6 +325,9 @@ class OrderViewSet(CreateModelMixin, RetrieveModelMixin, GenericViewSet):
         ]
     )  
     def create(self, request, *args, **kwargs):
+        """
+        Handles POST requests to create an order in the Brew Ha Ha database
+        """
         serializer = OrderSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()

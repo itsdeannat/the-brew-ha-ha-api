@@ -88,8 +88,20 @@ class UserSignupSerializer(serializers.ModelSerializer):
         return user
     
 class OrderItemSerializer(serializers.ModelSerializer):
-    product_id = serializers.IntegerField(source='product.id') # Will populate this field with the product's id from the DB
-    product_name = serializers.CharField(source='product.product_name', read_only=True) # Will populate this field with the product's name 
+    """ 
+    Serializer for the Order Item model.
+    
+    Converts Order Item model into JSON format.
+    
+    Fields:
+        product_id (int): The ID of the product in the database
+        product_name (str): The name of the product in the database
+        quantity (int): The amount of product requested
+    
+    """
+    product_id = serializers.IntegerField(source='product.id') 
+    product_name = serializers.CharField(source='product.product_name', read_only=True) 
+    quantity = serializers.IntegerField(source='product.product_quantity')
 
     class Meta:
         model = OrderItem
@@ -97,11 +109,23 @@ class OrderItemSerializer(serializers.ModelSerializer):
 
 
 class OrderSerializer(serializers.ModelSerializer):
+    """ 
+    Serializer for the Order model
+    
+    Converts Order model to JSON format. 
+    
+    Fields:
+        id (int): The unique ID for the order
+        order_items (OrderItemSerializer): References the Order Item serializer and links order items to an order
+        order_date (datetime): The date the order is submitted. Set to readonly to return to the customer
+        status (str): The status of the order. Set to readonly to return to the customer
+        payment_method (str): The payment method used
+    """
     
     id = serializers.IntegerField(read_only=True, help_text="The unique order id")
     order_items = OrderItemSerializer(many=True, required=True, help_text="The items in the customer's order. Provide the `product_id` and quantity for each product.")  
-    order_date = serializers.DateTimeField(read_only=True, help_text="Order date") # Set to readonly to return to the customer
-    status = serializers.CharField(read_only=True, help_text="Order status") # Set to readonly to return to the customer
+    order_date = serializers.DateTimeField(read_only=True, help_text="Order date") 
+    status = serializers.CharField(read_only=True, help_text="Order status") 
     payment_method = serializers.CharField(required=True, help_text="The payment method used")
     
 
@@ -110,19 +134,31 @@ class OrderSerializer(serializers.ModelSerializer):
         fields = ['id', 'payment_method', 'order_date', 'status', 'order_items']
         
     
-
-    def create(self, validated_data):
-        order_items_data = validated_data.pop('order_items') # Gets the order items from customer's order
+    '''
+    Creates an order in the Brew Ha Ha database
+    
+    Parameters:
+        order_data (dict): A dictionary containing the data for the order
+        
+    Returns:
+        order: The newly created order with the order items
+    '''
+    def create(self, order_data):
+        order_items_data = order_data.pop('order_items') 
+        
+        # Ensure transaction is successful before committing to the DB
         with transaction.atomic():  
-            order = Order.objects.create(**validated_data) # Creates a new order with the data
+            order = Order.objects.create(**order_data) 
             
-            for order_item_data in order_items_data: # Fetch the product instance using the product_id
-                product = Product.objects.get(id=order_item_data['product']['id']) # Create the OrderItem with the actual product instance
+            for order_item_data in order_items_data: 
+                # Gets the product id for the order item
+                product = Product.objects.get(id=order_item_data['product']['id']) 
 
+                # Verify that the item is still in stock
                 if order_item_data['quantity'] > product.quantity:
                     raise serializers.ValidationError(f"{product.product_name} is out of stock.")
 
-                # Create OrderItem
+                # Create the OrderItem
                 OrderItem.objects.create(order=order, product=product, quantity=order_item_data['quantity'])
 
                 # Update the product quantity 
@@ -132,10 +168,19 @@ class OrderSerializer(serializers.ModelSerializer):
         return order
     
 class BadRequestSerializer(serializers.Serializer):
+    """
+    Serializer for the 401 Unauthorized response
+    """
     detail = serializers.CharField(default="The request body could not be read properly.")
 
 class UnauthorizedSerializer(serializers.Serializer):
+    """ 
+    Serializer for 400 Bad Request responses
+    """
     detail = serializers.CharField(default="Authentication credentials were not provided.")
 
 class NotFoundSerializer(serializers.Serializer):
+    """
+    Serializer for the 404 Not Found responses
+    """
     detail = serializers.CharField(default="The requested resource was not found.")    

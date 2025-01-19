@@ -23,16 +23,34 @@ class Product(models.Model):
     quantity = models.IntegerField(default=True)
     
 class Order(models.Model):
-    PAYMENT_METHODS = [ # Only choices customers can include in request
+    """
+    Model representing an order in the Brew Ha Ha detabase
+
+    Attributes:
+        payment_method (str): Accepted payment choices, e.g. 'Credit', 'Debit')
+        order_date (str): The date the order is submitted
+        status (str): The status of the order, e.g. 'in progress', 'canceled', 'completed'
+    """
+    payment_methods = [ 
         ('Credit', 'Credit'),
         ('Debit', 'Debit'),
     ]
     
-    payment_method = models.CharField(max_length=20, choices=PAYMENT_METHODS)
+    payment_method = models.CharField(max_length=20, choices=payment_methods)
     order_date = models.DateTimeField(default=timezone.now)
     status = models.CharField(max_length=20, default="in progress")
 
 class OrderItem(models.Model):
-    order = models.ForeignKey(Order, related_name='order_items', on_delete=models.CASCADE) # Links orders to order items
-    product = models.ForeignKey('Product', on_delete=models.CASCADE) # Links products to order items for matching
+    """Model for order items in the Brew Ha Ha database
+
+    Attributes:
+        order (ForeignKey): References the Order model and links orders to order items
+        Product (ForeignKey): References the Product model and links products to order items for matching
+        quantity (PositiveIntegerField): The amount of product in stock
+    """
+    # Because an order can have multiple items but an item can only be in one order
+    order = models.ForeignKey(Order, related_name='order_items', on_delete=models.CASCADE)
+    # Because a product can appear in multiple order items but an order item is associated with 1 product only
+    product = models.ForeignKey('Product', on_delete=models.CASCADE) 
+    # Make sure stock quantity is zero or above
     quantity = models.PositiveIntegerField()
