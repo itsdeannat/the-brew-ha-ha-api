@@ -20,17 +20,14 @@ paths:
             schema:
               $ref: '#/components/schemas/Order'
             examples:
-              SuccessfulResponse:
+              ExampleRequest:
                 value:
-                - id: '13'
                   payment_method: Credit
-                  order_date: '2025-01-11T03:17:47.746025Z'
-                  status: in progress
                   order_items:
                   - product_id: 2
                     quantity: 1
-                    product_name: blueberry muffin
-                summary: Successful Response
+                summary: Example Request
+                description: Example of a request to create an order
           application/x-www-form-urlencoded:
             schema:
               $ref: '#/components/schemas/Order'
@@ -41,23 +38,22 @@ paths:
       security:
       - JWTAuth: []
       responses:
-        '200':
+        '201':
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Order'
               examples:
-                SuccessfulResponse:
+                ExampleResponse:
                   value:
-                  - id: '13'
+                  - id: 13
                     payment_method: Credit
                     order_date: '2025-01-11T03:17:47.746025Z'
                     status: in progress
                     order_items:
                     - product_id: 2
                       quantity: 1
-                      product_name: blueberry muffin
-                  summary: Successful Response
+                  summary: Example response
           description: ''
         '400':
           content:
@@ -122,7 +118,6 @@ paths:
                     order_items:
                     - product_id: 2
                       quantity: 1
-                      product_name: blueberry muffin
                   summary: Successful Response
           description: ''
         '400':
@@ -482,7 +477,6 @@ components:
           readOnly: true
         refresh:
           type: string
-          writeOnly: true
       required:
       - access
       - refresh
