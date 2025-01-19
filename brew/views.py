@@ -3,7 +3,7 @@ from rest_framework.views import APIView
 from rest_framework import viewsets
 from rest_framework.viewsets import ReadOnlyModelViewSet, GenericViewSet
 from rest_framework.mixins import CreateModelMixin, RetrieveModelMixin
-from drf_spectacular.utils import extend_schema, OpenApiExample
+from drf_spectacular.utils import extend_schema, OpenApiExample, OpenApiRequest
 from drf_spectacular.types import OpenApiTypes
 from rest_framework.response import Response
 from rest_framework import status
@@ -200,8 +200,7 @@ class OrderViewSet(CreateModelMixin, RetrieveModelMixin, GenericViewSet):
                         "order_items": [
                             {
                                 "product_id": 2,
-                                "quantity": 1,
-                                "product_name": "blueberry muffin"
+                                "quantity": 1
                             }
                         ]
                     },
@@ -240,20 +239,33 @@ class OrderViewSet(CreateModelMixin, RetrieveModelMixin, GenericViewSet):
     @extend_schema(
         operation_id="create_order",
         description="Order available products from the database",
-        request=OrderSerializer,
         responses={
-            200: OrderSerializer,
+            201: OrderSerializer,
             400: BadRequestSerializer,
             401: UnauthorizedSerializer,
             404: NotFoundSerializer
         },
         examples=[
             OpenApiExample(
-                name="Successful Response",
+            name="Example Request",
+            description="Example of a request to create an order",
+            value={
+                "payment_method": "Credit",
+                "order_items": [
+                    {
+                        "product_id": 2,
+                        "quantity": 1,
+                    }
+                ]
+            },
+            request_only=True,  # Indicates this is for the request
+        ),
+            OpenApiExample(
+                name="Example response",
                 description="",
                 value=[
                     {
-                        "id": "13",
+                        "id": 13,
                         "payment_method": "Credit",
                         "order_date": "2025-01-11T03:17:47.746025Z",
                         "status": "in progress",
@@ -261,12 +273,12 @@ class OrderViewSet(CreateModelMixin, RetrieveModelMixin, GenericViewSet):
                             {
                                 "product_id": 2,
                                 "quantity": 1,
-                                "product_name": "blueberry muffin"
                             }
                         ]
                     },
                 ],
-                status_codes=["200"]
+                status_codes=["201"],
+                response_only=True
             ),
             OpenApiExample(
                 name="Bad Request",
