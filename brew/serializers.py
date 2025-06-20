@@ -30,7 +30,7 @@ class ProductSerializer(serializers.ModelSerializer):
     
     class Meta:
         model=Product
-        fields = fields=['id', 'product_name', 'temperature', 'caffeine_amount', 'price', 'description', 'quantity']
+        fields = ['id', 'product_name', 'temperature', 'caffeine_amount', 'price', 'description', 'quantity']
 
 class UserSignupSerializer(serializers.ModelSerializer):
     """Serializer for user signups. 
@@ -134,16 +134,15 @@ class OrderSerializer(serializers.ModelSerializer):
         fields = ['id', 'payment_method', 'order_date', 'status', 'order_items']
         
     
-    '''
-    Creates an order in the Brew Ha Ha database
     
-    Parameters:
-        order_data (dict): A dictionary containing the data for the order
-        
-    Returns:
-        order: The newly created order with the order items
-    '''
     def create(self, order_data):
+        '''
+        Creates an order in the Brew Ha Ha database    
+        Parameters:
+            order_data (dict): A dictionary containing the data for the order        
+        Returns:
+            order: The newly created order with the order items
+        '''
         order_items_data = order_data.pop('order_items') 
         
         # Ensure transaction is successful before committing to the DB
