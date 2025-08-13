@@ -1,6 +1,6 @@
 {
   "name": "the-brew-ha-ha-api",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "A coffee-themed API built with the Django REST Framework",
   "main": "index.js",
   "scripts": {
