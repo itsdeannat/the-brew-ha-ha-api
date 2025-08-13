@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.1.0](https://github.com/itsdeannat/the-brew-ha-ha-api/compare/v1.0.0...v1.1.0) (2025-08-13)
+
+
+### Added
+
+* Add README file ([5a9579a](https://github.com/itsdeannat/the-brew-ha-ha-api/commit/5a9579afa65de668aa6c4e72066b284ab734a126))
+
 ## 1.0.0 (2025-01-19)
 
 
