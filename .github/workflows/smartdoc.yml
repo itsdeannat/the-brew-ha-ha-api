@@ -2,7 +2,9 @@ name: SmartDoc Demo
 run-name: Testing out GitHub Actions 
 on: 
     pull_request:
-        types: [opened, reopened]
+        paths:
+            - "**/*.yaml"
+            - "**/*.yml"
 jobs:
     smartdoc-analyze:
         runs-on: ubuntu-latest
