@@ -12,7 +12,7 @@ The API uses Django REST Framework serializers and views to handle data input an
 
 You are welcome to install the Brew Ha Ha API for local testing and exploration. To install the API, follow these steps.
 
-### Step 1: Clone the Brew Ha Ha API repository
+### Step 1: Clone the repository
 
 To clone the repository, run the following command:
 
