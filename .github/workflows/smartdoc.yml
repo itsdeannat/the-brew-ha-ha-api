@@ -1,10 +1,11 @@
 name: SmartDoc Demo
 run-name: Testing out GitHub Actions 
 on: 
-    pull_request:
-        paths:
-            - "**.yaml"
-            - "**.yml"
+    push:
+      branches: ["main"]
+      paths:
+        - "**.yaml"
+        - "**.yml"
 jobs:
     smartdoc-analyze:
         runs-on: ubuntu-latest
