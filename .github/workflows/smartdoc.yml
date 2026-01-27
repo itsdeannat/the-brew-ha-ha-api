@@ -22,4 +22,4 @@ jobs:
             - name: Analyze a file
               env:
                 OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
-              run: smartdoc analyze schema.yml --fail-on responses.missing_descriptions=2
+              run: smartdoc analyze sample_oas.json --fail-on responses.missing_descriptions=2 --fail-on operations.missing_fields=1
