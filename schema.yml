@@ -11,7 +11,7 @@ paths:
   /api/orders/:
     post:
       operationId: create_order
-      description: Order the available products from the database
+      description: Order the available products from the full database
       tags:
       - orders
       requestBody:
