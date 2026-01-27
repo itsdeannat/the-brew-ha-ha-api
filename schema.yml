@@ -27,7 +27,7 @@ paths:
                   - product_id: 2
                     quantity: 1
                 summary: Example Request
-                description: Example of a request to create an order
+                description: Example of a request to create a order
           application/x-www-form-urlencoded:
             schema:
               $ref: '#/components/schemas/Order'
