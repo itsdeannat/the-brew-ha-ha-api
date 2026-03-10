@@ -1,11 +1,11 @@
 name: Validate OpenAPI Spec
 
-on: 
-    push:
-      branches: ["main"]
-      paths:
-        - "**.yaml"
-        - "**.yml"
+on:
+  push:
+    branches: ["main"]
+    paths:
+      - "**.yaml"
+      - "**.yml"
 
 jobs:
   specgate:
@@ -21,4 +21,4 @@ jobs:
         run: go install github.com/itsdeannat/specgate-cli@v0.1.1
 
       - name: Check OpenAPI spec
-        run: specgate check schema.yml
+        run: $(go env GOPATH)/bin/specgate check schema.yml
