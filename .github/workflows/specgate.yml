@@ -19,7 +19,7 @@ jobs:
 
       - name: Install SpecGate
         run: |
-          go install github.com/itsdeannat/specgate@v0.1.0
+          go install github.com/itsdeannat/specgate-cli@v0.1.0
           echo "$(go env GOPATH)/bin" >> $GITHUB_PATH
 
       - name: Check OpenAPI spec
